@@ -10,6 +10,14 @@ The project is a data processing pipeline (ETL) for road traffic accidents. The 
 * Unity Catalog
 * Databricks Auto Loader (`cloudFiles`)
 
+## Code Navigation (For Reviewers)
+The core logic of the declarative pipelines and orchestration can be found in the following files:
+* **Bronze Layer Ingestion:** `src/car_accident_pl_etl/transformations/02_bronze_ingestion.py`
+* **Silver Layer Transformations & Expectations:** `src/car_accident_pl_etl/transformations/03_silver_transformations.py`
+* **Infrastructure Configuration (Pipelines & Jobs):** `resources/car_accident_pl_etl.pipeline.yml`
+
+*(Note: During deployment, DABs syncs these files to the remote workspace path, typically under `.bundle/<project_name>/dev/files/...`)*
+
 ## Data Architecture
 1. **Bronze Layer (`artemzharkov10_bronze.bronze_sewik`)**: 
    Incremental ingestion of raw data (JSON/CSV) from storage (`/Volumes/dbr_dev/artemzharkov10_bronze/raw_data/`) using Auto Loader. Technical metadata (source file path, ingest timestamp) is appended to the data.
