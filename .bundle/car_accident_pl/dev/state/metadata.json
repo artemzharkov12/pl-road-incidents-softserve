@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "config": {
+    "bundle": {
+      "name": "car_accident_pl",
+      "target": "dev",
+      "mode": "development",
+      "git": {
+        "bundle_root_path": "."
+      }
+    },
+    "workspace": {
+      "file_path": "/Workspace/Users/artemzharkov10@gmail.com/.bundle/car_accident_pl/dev/files"
+    },
+    "resources": {
+      "pipelines": {
+        "bronze_pipeline": {
+          "id": "d8b85c8a-8c12-4f1a-bbf4-ec635b37ba76",
+          "relative_path": "resources/car_accident_pl_etl.pipeline.yml"
+        },
+        "silver_pipeline": {
+          "id": "072a0660-3103-4687-a888-1300b6bb9c0f",
+          "relative_path": "resources/car_accident_pl_etl.pipeline.yml"
+        }
+      }
+    },
+    "presets": {
+      "source_linked_deployment": false
+    }
+  },
+  "extra": {}
+}

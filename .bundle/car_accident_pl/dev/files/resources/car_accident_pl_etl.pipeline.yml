@@ -1,0 +1,25 @@
+resources:
+  pipelines:
+    bronze_pipeline:
+      name: bronze_pipeline_${bundle.target}
+      target: artemzharkov10_bronze
+      catalog: dbr_dev
+      libraries:
+        - file:
+            path: ../src/car_accident_pl_etl/transformations/02_bronze_ingestion.py
+      configuration:
+        bronze_catalog: "dbr_dev"
+        bronze_schema: "artemzharkov10_bronze"
+      serverless: true
+
+    silver_pipeline:
+      name: silver_pipeline_${bundle.target}
+      target: artemzharkov10_silver
+      catalog: dbr_dev
+      libraries:
+        - file:
+            path: ../src/car_accident_pl_etl/transformations/03_silver_transformations.py
+      configuration:
+        bronze_catalog: "dbr_dev"
+        bronze_schema: "artemzharkov10_bronze"
+      serverless: true
