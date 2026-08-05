@@ -9,16 +9,12 @@ The project is a data processing pipeline (ETL) for road traffic accidents. The 
 * Databricks Asset Bundles (DABs)
 * Databricks Auto Loader (`cloudFiles`)
 
-<<<<<<< Updated upstream
 ## Code Navigation (For Reviewers)
 The core logic of the declarative pipelines and orchestration can be found in the following files:
 * **Bronze Layer Ingestion:** `src/car_accident_pl_etl/transformations/02_bronze_ingestion.py`
 * **Silver Layer Transformations & Expectations:** `src/car_accident_pl_etl/transformations/03_silver_transformations.py`
 * **Infrastructure Configuration (Pipelines & Jobs):** `resources/car_accident_pl_etl.pipeline.yml`
 
-*(Note: During deployment, DABs syncs these files to the remote workspace path, typically under `.bundle/<project_name>/dev/files/...`)*
-
-=======
 ## Project Structure
 The repository is organized to separate environment setup, raw data landing, and transformation layers.
 
@@ -44,7 +40,6 @@ The repository is organized to separate environment setup, raw data landing, and
 │           │   ├── AGENTS.md
 │           │   ├── CLAUDE.md
 │           │   ├── databricks.yml        # Main bundle configuration file
-│           │   ├── pyproject.toml
 │           │   └── README.md             # Project documentation
 │           └── state/
 ├── 00_setup/                 # Infrastructure and schema initialization
@@ -59,7 +54,7 @@ The repository is organized to separate environment setup, raw data landing, and
 │   └── 03c_silver_sewik_participants
 └── README.md                 
 ```
->>>>>>> Stashed changes
+
 ## Data Architecture
 1. **Bronze Layer (`artemzharkov10_bronze.bronze_sewik`)**: 
    Incremental ingestion of raw data (JSON/CSV) from storage (`/Volumes/dbr_dev/artemzharkov10_bronze/raw_data/`) using Auto Loader. Technical metadata (source file path, ingest timestamp) is appended to the data.
