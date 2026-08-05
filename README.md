@@ -1,15 +1,15 @@
 # Car Accident ETL Pipeline (SEWIK)
 
 ## Project Description
-The project is a data processing pipeline (ETL) for road traffic accidents. The process is implemented using Databricks Lakeflow Spark Declarative Pipelines (formerly Delta Live Tables) and Unity Catalog. The architecture is built on the Medallion pattern (Bronze, Silver) with physical isolation of database schemas.
+The project is a data processing pipeline (ETL) for road traffic accidents. The process is implemented using Databricks Lakeflow Spark Declarative Pipelines (formerly Delta Live Tables). The architecture is built on the Medallion pattern (Bronze, Silver) with physical isolation of database schemas.
 
 ## Tech Stack
 * Apache Spark (PySpark)
 * Databricks Lakeflow (Delta Live Tables)
 * Databricks Asset Bundles (DABs)
-* Unity Catalog
 * Databricks Auto Loader (`cloudFiles`)
 
+<<<<<<< Updated upstream
 ## Code Navigation (For Reviewers)
 The core logic of the declarative pipelines and orchestration can be found in the following files:
 * **Bronze Layer Ingestion:** `src/car_accident_pl_etl/transformations/02_bronze_ingestion.py`
@@ -18,6 +18,48 @@ The core logic of the declarative pipelines and orchestration can be found in th
 
 *(Note: During deployment, DABs syncs these files to the remote workspace path, typically under `.bundle/<project_name>/dev/files/...`)*
 
+=======
+## Project Structure
+The repository is organized to separate environment setup, raw data landing, and transformation layers.
+
+```text
+├── .bundle/
+│   └── car_accident_pl/
+│       └── dev/
+│           ├── artifacts/
+│           ├── files/
+│           │   ├── .vscode/
+│           │   ├── fixtures/
+│           │   ├── resources/            # YAML configuration for pipelines and jobs
+│           │   ├── src/
+│           │   │   ├── car_accident_pl/
+│           │   │   └── car_accident_pl_etl/
+│           │   │       ├── transformations/
+│           │   │       │   ├── 02_bronze_ingestion.py       # Bronze layer logic
+│           │   │       │   ├── 03_silver_transformations.py # Silver layer logic
+│           │   │       │   └── README.md
+│           │   │       └── sample_notebook
+│           │   ├── tests/
+│           │   ├── .gitignore
+│           │   ├── AGENTS.md
+│           │   ├── CLAUDE.md
+│           │   ├── databricks.yml        # Main bundle configuration file
+│           │   ├── pyproject.toml
+│           │   └── README.md             # Project documentation
+│           └── state/
+├── 00_setup/                 # Infrastructure and schema initialization
+│   ├── 00a_setup_bronze      # Bronze schema setup
+│   └── 00b_setup_silver      # Silver schema setup
+├── 01_landing/               
+├── 02_bronze/                # Bronze layer ETL logic
+│   └── 02a_bronze_car_accident 
+├── 03_silver/                # Silver layer ETL logic (isolated workloads)
+│   ├── 03a_silver_sewik_accidents
+│   ├── 03b_silver_sewik_vehicles
+│   └── 03c_silver_sewik_participants
+└── README.md                 
+```
+>>>>>>> Stashed changes
 ## Data Architecture
 1. **Bronze Layer (`artemzharkov10_bronze.bronze_sewik`)**: 
    Incremental ingestion of raw data (JSON/CSV) from storage (`/Volumes/dbr_dev/artemzharkov10_bronze/raw_data/`) using Auto Loader. Technical metadata (source file path, ingest timestamp) is appended to the data.
@@ -49,3 +91,5 @@ databricks bundle deploy
 
 # 3. Run the pipeline (Orchestrated via Job)
 databricks bundle run car_accident_etl_job
+
+
