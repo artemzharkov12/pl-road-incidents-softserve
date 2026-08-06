@@ -10,6 +10,7 @@ SILVER_SCHEMA = dbutils.widgets.get("silver_schema")
 spark.sql(f"CREATE DATABASE IF NOT EXISTS {SILVER_CATALOG}.{SILVER_SCHEMA}")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {SILVER_CATALOG}.{SILVER_SCHEMA}.checkpoints")
 
+
 # COMMAND ----------
 
 # MAGIC %md

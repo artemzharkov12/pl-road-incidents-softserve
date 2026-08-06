@@ -1,6 +1,6 @@
 # Databricks notebook source
 dbutils.widgets.text("bronze_catalog","dbr_dev")
-dbutils.widgets.text("bronze_schema","artemzharkov10_silver")
+dbutils.widgets.text("bronze_schema","artemzharkov10_bronze")
 
 BRONZE_CATALOG = dbutils.widgets.get("bronze_catalog")
 BRONZE_SCHEMA = dbutils.widgets.get("bronze_schema")
@@ -8,6 +8,7 @@ BRONZE_SCHEMA = dbutils.widgets.get("bronze_schema")
 # COMMAND ----------
 
 spark.sql(f"CREATE DATABASE IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}")
+spark.sql(f"CREATE VOLUME IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}.raw_data")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}.checkpoints")
 
 # COMMAND ----------
