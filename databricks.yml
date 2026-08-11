@@ -30,7 +30,7 @@ targets:
     mode: development
     default: true
     workspace:
-      host: https://adb-7405604503619901.1.azuredatabricks.net/
+      host: https://dbc-6d6709e1-4e5d.cloud.databricks.com
     variables:
       catalog: dbr_dev
       schema: ${workspace.current_user.short_name}

@@ -6,7 +6,8 @@ resources:
       catalog: dbr_dev
       libraries:
         - file:
-            path: ../src/car_accident_pl_etl/transformations/02_bronze_ingestion.py
+            path: ../src/car_accident_pl_etl/transformations/02_bronze/02_bronze_ingestion.py
+
       configuration:
         bronze_catalog: "dbr_dev"
         bronze_schema: "artemzharkov10_bronze"
@@ -18,8 +19,24 @@ resources:
       catalog: dbr_dev
       libraries:
         - file:
-            path: ../src/car_accident_pl_etl/transformations/03_silver_transformations.py
+            path: ../src/car_accident_pl_etl/transformations/03_silver/03_silver_transformations.py
       configuration:
         bronze_catalog: "dbr_dev"
         bronze_schema: "artemzharkov10_bronze"
+      serverless: true
+
+    gold_pipeline:
+      name: gold_pipeline_${bundle.target}
+      target: artemzharkov10_gold
+      catalog: dbr_dev
+      libraries:
+        - requirements:
+            path: ../src/car_accident_pl_etl/requirements.txt
+        - file:
+            path: ../src/car_accident_pl_etl/transformations/04_gold/04a_gold_dimentions.py
+        - file:
+            path: ../src/car_accident_pl_etl/transformations/04_gold/04b_gold_facts.py
+      configuration:
+        silver_catalog: "dbr_dev"
+        silver_schema: "artemzharkov10_silver"
       serverless: true

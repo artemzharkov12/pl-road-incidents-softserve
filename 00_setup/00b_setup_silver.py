@@ -20,48 +20,48 @@ spark.sql(f"CREATE VOLUME IF NOT EXISTS {SILVER_CATALOG}.{SILVER_SCHEMA}.checkpo
 
 # spark.sql(f"""
 #     CREATE TABLE IF NOT EXISTS {SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_accidents (
-#         ID STRING,
-#         JEDNOSTKA_MIEJSCA STRING,
-#         JEDNOSTKA_LIKWIDUJACA STRING,
-#         JEDNOSTKA_OPERATORA STRING,
-#         GPS_X_GUS DOUBLE,
-#         GPS_Y_GUS DOUBLE,
-#         WOJ STRING,
-#         GMINA STRING,
-#         POWIAT STRING,
-#         MIEJSCOWOSC STRING,
-#         DATA_ZDARZENIA TIMESTAMP,
-#         DATA_ZDARZ DATE,
-#         GODZINA_ZDARZ STRING,
-#         WSP_GPS_X DOUBLE,
-#         WSP_GPS_Y DOUBLE,
-#         PREDKOSC_DOPUSZCZALNA INT,
-#         DROGA_PUBLICZNA STRING,
-#         DATA_ZGLOSZENIA TIMESTAMP,
-#         DATA_PRZYJAZDU TIMESTAMP,
-#         GEOD_KODY ARRAY<STRING>,
-#         ZABU_KOD STRING,
-#         CHMZ_KOD STRING,
-#         SSWA_KOD STRING
+#         accident_id STRING,
+#         police_unit_local STRING,
+#         police_unit_handling STRING,
+#         police_unit_operator STRING,
+#         gps_x_gus DOUBLE,
+#         gps_y_gus DOUBLE,
+#         voivodeship STRING,
+#         municipality STRING,
+#         district STRING,
+#         city STRING,
+#         accident_timestamp TIMESTAMP,
+#         accident_date DATE,
+#         accident_time STRING,
+#         gps_x DOUBLE,
+#         gps_y DOUBLE,
+#         speed_limit INT,
+#         public_road STRING,
+#         report_timestamp TIMESTAMP,
+#         arrival_timestamp TIMESTAMP,
+#         geod_code ARRAY<STRING>,
+#         built_up_area_code STRING,
+#         light_conditions_code STRING,
+#         traffic_lights_code STRING
 #     )
 # """)
 
 # spark.sql(f"""
 #     CREATE TABLE IF NOT EXISTS {SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_vehicles (
-#         ZDARZENIE_ID STRING,
-#         POJAZD_ID STRING,
-#         RODZAJ_POJAZDU STRING,
-#         MARKA STRING,
-#         ROK_PRODUKCJI INT
+#         accident_id STRING,
+#         vehicle_id STRING,
+#         vehicle_type STRING,
+#         brand STRING,
+#         production_year INT
 #     )
 # """)
 
 # spark.sql(f"""
 #     CREATE TABLE IF NOT EXISTS {SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_participants (
-#         ZDARZENIE_ID STRING,
-#         UCZESTNIK_ID STRING,
-#         PLEC STRING,
-#         LICZBA_LAT_KIEROWANIA INT,
-#         POZIOM_ALKOHOLU DOUBLE
+#         accident_id STRING,
+#         participant_id STRING,
+#         gender STRING,
+#         driving_experience_years INT,
+#         blood_alcohol_level DOUBLE
 #     )
 # """)
