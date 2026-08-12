@@ -40,3 +40,6 @@ resources:
         silver_catalog: "dbr_dev"
         silver_schema: "artemzharkov10_silver"
       serverless: true
+      environment:
+        dependencies:
+          - -r /Workspace/Users/artemzharkov10@gmail.com/pl-road-incidents-softserve/src/car_accident_pl_etl/requirements.txt
