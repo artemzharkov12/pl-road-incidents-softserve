@@ -42,4 +42,4 @@ resources:
       serverless: true
       environment:
         dependencies:
-          - -r /Workspace/Users/artemzharkov10@gmail.com/pl-road-incidents-softserve/src/car_accident_pl_etl/requirements.txt
+          - -r /Workspace/Users/${workspace.current_user.userName}/pl-road-incidents-softserve/src/car_accident_pl_etl/requirements.txt
