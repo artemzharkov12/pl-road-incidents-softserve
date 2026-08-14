@@ -1,0 +1,629 @@
+{
+  "datasets": [
+    {
+      "name": "b50c8d3f",
+      "displayName": "Location of car accidents",
+      "queryLines": [
+        "SELECT \r\n",
+        "    ROUND(f.gps_x, 4) AS lon_bucket,\r\n",
+        "    ROUND(f.gps_y, 4) AS lat_bucket,\r\n",
+        "    COUNT(f.accident_id) AS total_accidents,\r\n",
+        "    SUM(f.total_injured) AS total_injured_people\r\n",
+        "FROM gold_fact_accident_summary f\r\n",
+        "WHERE f.gps_x IS NOT NULL AND f.gps_y IS NOT NULL\r\n",
+        "GROUP BY ALL"
+      ],
+      "catalog": "dbr_dev",
+      "schema": "artemzharkov10_gold"
+    },
+    {
+      "name": "c053aa46",
+      "displayName": "Season",
+      "queryLines": [
+        "SELECT \r\n",
+        "    d.season,\r\n",
+        "    YEAR(summary.accident_timestamp) AS accident_year,\r\n",
+        "    COUNT(summary.accident_id) AS total_accidents\r\n",
+        "FROM gold_fact_accident_summary summary\r\n",
+        "JOIN gold_dim_date d ON summary.date_id = d.date_id\r\n",
+        "GROUP BY ALL"
+      ],
+      "catalog": "dbr_dev",
+      "schema": "artemzharkov10_gold"
+    },
+    {
+      "name": "40f6f956",
+      "displayName": "Car brand and car type",
+      "queryLines": [
+        "SELECT \r\n",
+        "    SUBSTRING_INDEX(vechicle.brand, ' ', 1) AS brand,\r\n",
+        "    COUNT(details.accident_id) AS total_accidents\r\n",
+        "FROM gold_fact_accident_details details\r\n",
+        "JOIN gold_dim_vehicle vechicle ON details.vehicle_id = vechicle.vehicle_id\r\n",
+        "WHERE vechicle.brand IS NOT NULL\r\n",
+        "GROUP BY ALL\r\n",
+        "HAVING COUNT(details.accident_id) > 10000"
+      ],
+      "catalog": "dbr_dev",
+      "schema": "artemzharkov10_gold"
+    },
+    {
+      "name": "a2ce2abc",
+      "displayName": "Demographics",
+      "queryLines": [
+        "SELECT \r\n",
+        "    participant.gender,\r\n",
+        "    participant.driving_experience_years AS experience_years,\r\n",
+        "    COUNT(details.accident_id) AS total_accidents\r\n",
+        "FROM gold_fact_accident_details details\r\n",
+        "JOIN gold_dim_participant participant ON details.participant_id = participant.participant_id\r\n",
+        "GROUP BY ALL\r\n",
+        "HAVING COUNT(details.accident_id) > 300"
+      ],
+      "catalog": "dbr_dev",
+      "schema": "artemzharkov10_gold"
+    },
+    {
+      "name": "171f4989",
+      "displayName": "Holidays and Alcohol",
+      "queryLines": [
+        "SELECT \r\n",
+        "    d.is_holiday,\r\n",
+        "    COUNT(DISTINCT summary.accident_id) AS total_accidents,\r\n",
+        "    COUNT(DISTINCT d.full_date) AS total_days,\r\n",
+        "    ROUND(COUNT(DISTINCT summary.accident_id) / COUNT(DISTINCT d.full_date), 0) AS avg_accidents_per_day,\r\n",
+        "    COUNT_IF(details.is_alcohol = True) AS alcohol_drivers,\r\n",
+        "    ROUND(COUNT(DISTINCT CASE WHEN details.is_alcohol = True THEN summary.accident_id END) / COUNT(DISTINCT d.full_date), 2) AS avg_alcohol_accidents_per_day,\r\n",
+        "    ROUND(AVG(NULLIF(details.blood_alcohol_level, 0)), 2) AS avg_blood_alcohol_level\r\n",
+        "\r\n",
+        "FROM gold_fact_accident_summary summary\r\n",
+        "JOIN gold_dim_date d ON summary.date_id = d.date_id\r\n",
+        "JOIN gold_fact_accident_details details ON summary.accident_id = details.accident_id\r\n",
+        "GROUP BY d.is_holiday"
+      ],
+      "catalog": "dbr_dev",
+      "schema": "artemzharkov10_gold"
+    }
+  ],
+  "pages": [
+    {
+      "name": "e7083d5a",
+      "displayName": "Location Of Car Accidents",
+      "layout": [
+        {
+          "widget": {
+            "name": "20",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "b50c8d3f",
+                  "fields": [
+                    {
+                      "name": "total_accidents",
+                      "expression": "`total_accidents`"
+                    },
+                    {
+                      "name": "lat_bucket",
+                      "expression": "`lat_bucket`"
+                    },
+                    {
+                      "name": "lon_bucket",
+                      "expression": "`lon_bucket`"
+                    },
+                    {
+                      "name": "total_injured_people",
+                      "expression": "`total_injured_people`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "2018-2024 years"
+              },
+              "mark": {
+                "shape": "circle",
+                "opacity": 0.53,
+                "size": -1.9
+              },
+              "widgetType": "symbol-map",
+              "encodings": {
+                "coordinates": {
+                  "latitude": {
+                    "fieldName": "lat_bucket"
+                  },
+                  "longitude": {
+                    "fieldName": "lon_bucket"
+                  }
+                },
+                "color": {
+                  "fieldName": "total_accidents",
+                  "scale": {
+                    "type": "quantitative",
+                    "colorRamp": {
+                      "mode": "custom-sequential",
+                      "colors": {
+                        "start": "#99F899",
+                        "end": "#FF0202"
+                      }
+                    },
+                    "domain": {
+                      "min": 1,
+                      "max": 10000
+                    },
+                    "reverse": false
+                  }
+                },
+                "size": {
+                  "fieldName": "total_injured_people",
+                  "scale": {
+                    "type": "quantitative",
+                    "domain": {
+                      "min": 1,
+                      "max": 50000
+                    }
+                  },
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 10
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "85499f84",
+      "displayName": "Brand correlation",
+      "layout": [
+        {
+          "widget": {
+            "name": "4e061872",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "40f6f956",
+                  "fields": [
+                    {
+                      "name": "brand",
+                      "expression": "`brand`"
+                    },
+                    {
+                      "name": "approx_percentile(total_accidents, percentage=1)",
+                      "expression": "APPROX_PERCENTILE(`total_accidents`, 1)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "brand",
+                  "axis": {
+                    "labelAngle": 90
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "approx_percentile(total_accidents, percentage=1)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 9
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "1ca07b8e",
+      "displayName": "Sociaty",
+      "layout": [
+        {
+          "widget": {
+            "name": "29481af2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a2ce2abc",
+                  "fields": [
+                    {
+                      "name": "sum(total_accidents)",
+                      "expression": "SUM(`total_accidents`)"
+                    },
+                    {
+                      "name": "gender",
+                      "expression": "`gender`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(total_accidents)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "amount of accidents"
+                },
+                "color": {
+                  "fieldName": "gender",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "K",
+                        "color": "#E40E7A"
+                      },
+                      {
+                        "value": "N",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 9
+                        }
+                      },
+                      {
+                        "value": "M",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 5,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "28f8f53e",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "a2ce2abc",
+                  "fields": [
+                    {
+                      "name": "bin(experience_years, binWidth=5)",
+                      "expression": "BIN_FLOOR(`experience_years`, 5)"
+                    },
+                    {
+                      "name": "sum(total_accidents)",
+                      "expression": "SUM(`total_accidents`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "histogram",
+              "encodings": {
+                "x": {
+                  "fieldName": "bin(experience_years, binWidth=5)",
+                  "scale": {
+                    "type": "quantitative",
+                    "domain": {
+                      "min": 0,
+                      "max": 49
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_accidents)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 0,
+            "width": 7,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "f6910a0a",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "171f4989",
+                  "fields": [
+                    {
+                      "name": "is_holiday",
+                      "expression": "`is_holiday`"
+                    },
+                    {
+                      "name": "sum(avg_alcohol_accidents_per_day)",
+                      "expression": "SUM(`avg_alcohol_accidents_per_day`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "combo",
+              "encodings": {
+                "x": {
+                  "fieldName": "is_holiday",
+                  "format": {
+                    "type": "alias",
+                    "mappings": [
+                      {
+                        "value": "true",
+                        "alias": "Holidays days"
+                      },
+                      {
+                        "value": "false",
+                        "alias": "Normal days"
+                      }
+                    ]
+                  },
+                  "displayName": "day types",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "primary": {
+                    "fields": [
+                      {
+                        "fieldName": "sum(avg_alcohol_accidents_per_day)",
+                        "displayName": "alcohol per mille"
+                      }
+                    ]
+                  },
+                  "secondary": {
+                    "fields": []
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 8,
+            "width": 8,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "8668c23e",
+      "displayName": "Season Accidents",
+      "layout": [
+        {
+          "widget": {
+            "name": "accidents",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c053aa46",
+                  "fields": [
+                    {
+                      "name": "season",
+                      "expression": "`season`"
+                    },
+                    {
+                      "name": "accident_year",
+                      "expression": "`accident_year`"
+                    },
+                    {
+                      "name": "sum(total_accidents)",
+                      "expression": "SUM(`total_accidents`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Accidents by the years and seasons "
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "accident_year",
+                  "displayName": "accidents by year",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_accidents)",
+                  "displayName": "total accidents",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "season",
+                  "displayName": "seasons",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Winter",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 1
+                        }
+                      },
+                      {
+                        "value": "Autumn",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 2
+                        }
+                      },
+                      {
+                        "value": "Spring",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 3
+                        }
+                      },
+                      {
+                        "value": "Summer",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 4
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 8
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

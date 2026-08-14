@@ -1,0 +1,27 @@
+{
+  "evaluation": {
+    "source": {
+      "name": "daily_volume",
+      "display": "daily_volume",
+      "aggregation": "AGGREGATION_UNSPECIFIED"
+    },
+    "comparison_operator": "LESS_THAN",
+    "threshold": {
+      "value": {
+        "double_value": 200.0
+      }
+    },
+    "notification": {}
+  },
+  "schedule": {
+    "quartz_cron_schedule": "5 30 7 * * ?",
+    "timezone_id": "Europe/Warsaw"
+  },
+  "query_lines": [
+    "-- Obviously we have just history data. so it is just for cheking how it works ",
+    "SELECT ",
+    "    COUNT(accident_id) AS daily_volume",
+    "FROM dbr_dev.artemzharkov10_gold.gold_fact_accident_summary",
+    "WHERE date_id = CAST(DATE_FORMAT(CURRENT_DATE(), 'yyyyMMdd') AS INT)"
+  ]
+}

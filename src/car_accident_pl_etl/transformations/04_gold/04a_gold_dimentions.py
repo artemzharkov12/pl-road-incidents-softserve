@@ -5,7 +5,6 @@ from pyspark.sql import functions as F
 # GOLD_CATALOG = spark.conf.get("gold_catalog", "dbr_dev")
 # GOLD_SCHEMA = spark.conf.get("gold_schema", "artemzharkov10_gold")
 
-
 # execute dim_date dimention table =======================
 @dlt.table(name = "gold_dim_date")
 def create_gold_dim_date():
