@@ -1,52 +1,39 @@
 resources:
   jobs:
     history_voivodeship_weather:
-      name: "[1] history_voivodeship_weather"
+      name: "history_voivodeship_weather_etl"
       tasks:
         - task_key: 01a_bronze_history_voivodeship
           notebook_task:
             notebook_path: ../notebooks/01_bronze/01a_bronze_history_voivodeship_weather.ipynb
+            
         - task_key: 02a_silver_history_voivodeship
           depends_on:
             - task_key: 01a_bronze_history_voivodeship
           notebook_task:
             notebook_path: ../notebooks/02_silver/02a_silver_history_voivodeship_weather.ipynb
+            
         - task_key: 03a_gold_clustering_weather
           depends_on:
             - task_key: 02a_silver_history_voivodeship
           notebook_task:
             notebook_path: ../notebooks/03_gold/03a_gold_clustering_weather_conditions.ipynb
 
-    history_car_accidents_weather:
-      name: "[2] history_car_accidents_weather"
-      tasks:
-        - task_key: 01b_bronze_history_car_accidents
-          notebook_task:
-            notebook_path: ../notebooks/01_bronze/01b_bronze_history_car_accidents_weather.ipynb
-        - task_key: 02b_silver_history_car_accidents
-          depends_on:
-            - task_key: 01b_bronze_history_car_accidents
-          notebook_task:
-            notebook_path: ../notebooks/02_silver/02b_silver_history_car_accidents_weather.ipynb
-        - task_key: 03b_gold_accidents_weather_merge
-          depends_on:
-            - task_key: 02b_silver_history_car_accidents
-          notebook_task:
-            notebook_path: ../notebooks/03_gold/03b_gold_accidents_weather_merge.ipynb
-
     Algorithm_Of_Weather_Clustering:
-      name: "Algorithm_Of_Weather_Clustering"
+      name: "Algorithm_Of_Weather_Clustering_Weights"
       tasks:
-        - task_key: run_history_voivodeship_weather
+        - task_key: history_voivodeship_weather_etl
           run_job_task:
             job_id: ${resources.jobs.history_voivodeship_weather.id}
-        - task_key: run_history_car_accidents_weather
+            
+        - task_key: 03b_gold_accidents_weather_merge
           depends_on:
-            - task_key: run_history_voivodeship_weather
-          run_job_task:
-            job_id: ${resources.jobs.history_car_accidents_weather.id}
+            - task_key: history_voivodeship_weather_etl
+          notebook_task:
+            notebook_path: ../notebooks/03_gold/03b_gold_accidents_weather_merge.ipynb
+            
         - task_key: 03c_gold_algorithm_of_claster_weight
           depends_on:
-            - task_key: run_history_car_accidents_weather
+            - task_key: 03b_gold_accidents_weather_merge
           notebook_task:
             notebook_path: ../notebooks/03_gold/03c_gold_algorithm_of_claster_weight.ipynb

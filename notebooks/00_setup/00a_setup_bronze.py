@@ -9,7 +9,6 @@ BRONZE_SCHEMA = dbutils.widgets.get("bronze_schema")
 
 spark.sql(f"CREATE DATABASE IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}.raw_data")
-dbutils.fs.mkdirs(f"/Volumes/{BRONZE_CATALOG}/{BRONZE_SCHEMA}/raw_data/weather_history")
 
 # COMMAND ----------
 

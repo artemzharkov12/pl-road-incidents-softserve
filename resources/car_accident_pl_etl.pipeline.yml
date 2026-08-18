@@ -30,8 +30,6 @@ resources:
       target: artemzharkov10_gold
       catalog: dbr_dev
       libraries:
-        - requirements:
-            path: ../src/car_accident_pl_etl/requirements.txt
         - file:
             path: ../src/car_accident_pl_etl/transformations/04_gold/04a_gold_dimentions.py
         - file:
