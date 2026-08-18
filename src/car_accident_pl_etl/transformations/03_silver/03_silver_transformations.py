@@ -1,14 +1,16 @@
-from pyspark.sql.functions import explode, col
-import dlt
+from pyspark.sql.functions import explode, col, when
+from pyspark import pipelines as dp
+
 
 BRONZE_CATALOG = spark.conf.get("bronze_catalog", "dbr_dev")
 BRONZE_SCHEMA = spark.conf.get("bronze_schema", "artemzharkov10_bronze")
 
 BRONZE_TABLE_PATH = f"{BRONZE_CATALOG}.{BRONZE_SCHEMA}.bronze_sewik"
 
-@dlt.table(name="silver_sewik_accidents")
-@dlt.expect_or_fail("valid_id", "accident_id IS NOT NULL") 
-@dlt.expect_or_drop("valid_date", "accident_timestamp IS NOT NULL")
+
+@dp.table(name="silver_sewik_accidents")
+@dp.expect_or_drop("valid_date", "accident_timestamp IS NOT NULL")
+@dp.expect_or_drop("valid_voivodeship", "voivodeship IS NOT NULL")
 def create_silver_accidents():
     return (
         spark.readStream.table(BRONZE_TABLE_PATH)
@@ -19,7 +21,23 @@ def create_silver_accidents():
             col("JEDNOSTKA_OPERATORA").alias("police_unit_operator"),
             col("GPS_X_GUS").cast("double").alias("gps_x_gus"),
             col("GPS_Y_GUS").cast("double").alias("gps_y_gus"),
-            col("WOJ").alias("voivodeship"),
+            when(col("WOJ") == "WOJ. MAZOWIECKIE", "Mazowieckie")
+                .when(col("WOJ") == "WOJ. PODLASKIE", "Podlaskie")
+                .when(col("WOJ") == "WOJ. OPOLSKIE", "Opolskie")
+                .when(col("WOJ") == "WOJ. ŚLĄSKIE", "Śląskie")
+                .when(col("WOJ") == "WOJ. POMORSKIE", "Pomorskie")
+                .when(col("WOJ") == "WOJ. ŁÓDZKIE", "Łódzkie")
+                .when(col("WOJ") == "WOJ. PODKARPACKIE", "Podkarpackie")
+                .when(col("WOJ") == "WOJ. KUJAWSKO-POMORSKIE", "Kujawsko-Pomorskie")
+                .when(col("WOJ") == "WOJ. WARMIŃSKO-MAZURSKIE", "Warmińsko-Mazurskie")
+                .when(col("WOJ") == "WOJ. ŚWIĘTOKRZYSKIE", "Świętokrzyskie")
+                .when(col("WOJ") == "WOJ. ZACHODNIOPOMORSKIE", "Zachodniopomorskie")
+                .when(col("WOJ") == "WOJ. MAŁOPOLSKIE", "Małopolskie")
+                .when(col("WOJ") == "WOJ. LUBUSKIE", "Lubuskie")
+                .when(col("WOJ") == "WOJ. WIELKOPOLSKIE", "Wielkopolskie")
+                .when(col("WOJ") == "WOJ. LUBELSKIE", "Lubelskie")
+                .when(col("WOJ") == "WOJ. DOLNOŚLĄSKIE", "Dolnośląskie")
+                .otherwise(col("WOJ")).alias("voivodeship"),
             col("GMINA").alias("municipality"),
             col("POWIAT").alias("district"),
             col("MIEJSCOWOSC").alias("city"),
@@ -40,8 +58,8 @@ def create_silver_accidents():
         .dropDuplicates(["accident_id"])
     )
 
-@dlt.table(name="silver_sewik_vehicles")
-@dlt.expect_or_drop("valid_vehicle_id", "vehicle_id IS NOT NULL")
+@dp.table(name="silver_sewik_vehicles")
+@dp.expect_or_drop("valid_vehicle_id", "vehicle_id IS NOT NULL")
 def create_silver_vehicles():
     return (
         spark.readStream.table(BRONZE_TABLE_PATH)
@@ -58,8 +76,8 @@ def create_silver_vehicles():
         )
     )
 
-@dlt.table(name="silver_sewik_participants")
-@dlt.expect_or_drop("valid_participant_id", "participant_id IS NOT NULL")
+@dp.table(name="silver_sewik_participants")
+@dp.expect_or_drop("valid_participant_id", "participant_id IS NOT NULL")
 def create_silver_participants():
     return (
         spark.readStream.table(BRONZE_TABLE_PATH)

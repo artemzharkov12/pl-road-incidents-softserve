@@ -1,4 +1,4 @@
-import dlt
+from pyspark import pipelines as dp
 from pyspark.sql import functions as F
 
 
@@ -6,7 +6,7 @@ from pyspark.sql import functions as F
 # GOLD_SCHEMA = spark.conf.get("gold_schema", "artemzharkov10_gold")
 
 # execute dim_date dimention table =======================
-@dlt.table(name = "gold_dim_date")
+@dp.table(name = "gold_dim_date")
 def create_gold_dim_date():
     import holidays
 
@@ -37,7 +37,7 @@ def create_gold_dim_date():
 
 
 # execute dim_location dimention table =======================
-@dlt.table(name = "gold_dim_location")
+@dp.table(name = "gold_dim_location")
 def create_gold_dim_location():
 
     SILVER_CATALOG = spark.conf.get("silver_catalog", "dbr_dev")
@@ -64,7 +64,7 @@ def create_gold_dim_location():
 
 
 # execute dim_vechicle dimention table =======================
-@dlt.table(name = "gold_dim_vehicle")
+@dp.table(name = "gold_dim_vehicle")
 def create_gold_dim_vehicle():
 
     SILVER_CATALOG = spark.conf.get("silver_catalog", "dbr_dev")
@@ -82,7 +82,7 @@ def create_gold_dim_vehicle():
 
 
 # execute dim_participant dimention table =======================
-@dlt.table(name = "gold_dim_participant")
+@dp.table(name = "gold_dim_participant")
 def create_gold_dim_participant():
 
     SILVER_CATALOG = spark.conf.get("silver_catalog", "dbr_dev")
