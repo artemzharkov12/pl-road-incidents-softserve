@@ -2,18 +2,12 @@ from pyspark import pipelines as dp
 from pyspark.sql import functions as F
 import holidays
 
-GOLD_CATALOG = spark.conf.get("gold_catalog", "dbr_dev")
-GOLD_SCHEMA = spark.conf.get("gold_schema", "artemzharkov10_gold")
 SILVER_CATALOG = spark.conf.get("silver_catalog", "dbr_dev")
 SILVER_SCHEMA = spark.conf.get("silver_schema", "artemzharkov10_silver")
 
 
 # execute dim_date dimention table =======================
-@dp.table(
-    name="gold_dim_date",
-    catalog=GOLD_CATALOG,
-    schema=GOLD_SCHEMA
-)
+@dp.table(name="gold_dim_date")
 def create_gold_dim_date():
     df_silver_accidents = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_accidents")
     
@@ -38,11 +32,7 @@ def create_gold_dim_date():
 
 
 # execute dim_location dimention table =======================
-@dp.table(
-    name="gold_dim_location",
-    catalog=GOLD_CATALOG,
-    schema=GOLD_SCHEMA
-)
+@dp.table(name="gold_dim_location")
 def create_gold_dim_location():
     df_silver_accidents = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_accidents")
 
@@ -66,11 +56,7 @@ def create_gold_dim_location():
 
 
 # execute dim_vechicle dimention table =======================
-@dp.table(
-    name="gold_dim_vehicle",
-    catalog=GOLD_CATALOG,
-    schema=GOLD_SCHEMA
-)
+@dp.table(name="gold_dim_vehicle")
 def create_gold_dim_vehicle():
     df_silver_vehicles = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_vehicles")
     
@@ -83,11 +69,7 @@ def create_gold_dim_vehicle():
 
 
 # execute dim_participant dimention table =======================
-@dp.table(
-    name="gold_dim_participant",
-    catalog=GOLD_CATALOG,
-    schema=GOLD_SCHEMA
-)
+@dp.table(name="gold_dim_participant")
 def create_gold_dim_participant():
     df_silver_participants = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_participants")
 
@@ -97,4 +79,3 @@ def create_gold_dim_participant():
         F.col("driving_experience_years")
     ).distinct()
     return dim_participants
-

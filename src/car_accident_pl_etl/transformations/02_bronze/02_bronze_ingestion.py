@@ -3,13 +3,9 @@ from pyspark.sql.functions import current_timestamp, col
 
 BRONZE_CATALOG = spark.conf.get("bronze_catalog", "dbr_dev")
 BRONZE_SCHEMA = spark.conf.get("bronze_schema", "artemzharkov10_bronze")
-
 SOURCE_PATH = f"/Volumes/{BRONZE_CATALOG}/{BRONZE_SCHEMA}/raw_data/"
 
-@dp.table(
-    catalog= f"{BRONZE_CATALOG}",
-    schema= f"{BRONZE_SCHEMA}",
-    name="bronze_sewik")
+@dp.table(name="bronze_sewik")
 def create_bronze_table():
     return (spark.readStream
         .format("cloudFiles")

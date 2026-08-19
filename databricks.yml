@@ -1,5 +1,3 @@
-# This is a Declarative Automation Bundle definition for car_accident_pl.
-# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
   name: car_accident_pl
   uuid: 810c0ddc-cf64-4266-954f-83ea2f86736f
@@ -27,6 +25,7 @@ targets:
     variables:
       catalog: dbr_dev
       schema: ${workspace.current_user.short_name}
+      
   prod:
     mode: production
     workspace:
@@ -55,4 +54,22 @@ targets:
               existing_cluster_id: ${var.prod_cluster_id}
             - task_key: 03c_gold_algorithm_of_claster_weight
               existing_cluster_id: ${var.prod_cluster_id}
-    
+
+      pipelines:
+        bronze_pipeline:
+          serverless: false
+          clusters:
+            - label: default
+              num_workers: 1
+              
+        silver_pipeline:
+          serverless: false
+          clusters:
+            - label: default
+              num_workers: 1
+              
+        gold_pipeline:
+          serverless: false
+          clusters:
+            - label: default
+              num_workers: 1

@@ -1,17 +1,14 @@
 from pyspark.sql.functions import explode, col, when
 from pyspark import pipelines as dp
 
-
+# Переменные для чтения из бронзового слоя
 BRONZE_CATALOG = spark.conf.get("bronze_catalog", "dbr_dev")
 BRONZE_SCHEMA = spark.conf.get("bronze_schema", "artemzharkov10_bronze")
 
 BRONZE_TABLE_PATH = f"{BRONZE_CATALOG}.{BRONZE_SCHEMA}.bronze_sewik"
 
 
-@dp.table(
-    catalog= f"{BRONZE_CATALOG}",
-    schema= f"{BRONZE_SCHEMA}",
-    name="silver_sewik_accidents")
+@dp.table(name="silver_sewik_accidents")
 @dp.expect_or_drop("valid_date", "accident_timestamp IS NOT NULL")
 @dp.expect_or_drop("valid_voivodeship", "voivodeship IS NOT NULL")
 def create_silver_accidents():
@@ -61,10 +58,7 @@ def create_silver_accidents():
         .dropDuplicates(["accident_id"])
     )
 
-@dp.table(
-    catalog= f"{BRONZE_CATALOG}",
-    schema= f"{BRONZE_SCHEMA}",
-    name="silver_sewik_vehicles")
+@dp.table(name="silver_sewik_vehicles")
 @dp.expect_or_drop("valid_vehicle_id", "vehicle_id IS NOT NULL")
 def create_silver_vehicles():
     return (
@@ -82,10 +76,7 @@ def create_silver_vehicles():
         )
     )
 
-@dp.table(
-    catalog= f"{BRONZE_CATALOG}",
-    schema= f"{BRONZE_SCHEMA}",
-    name="silver_sewik_participants")
+@dp.table(name="silver_sewik_participants")
 @dp.expect_or_drop("valid_participant_id", "participant_id IS NOT NULL")
 def create_silver_participants():
     return (

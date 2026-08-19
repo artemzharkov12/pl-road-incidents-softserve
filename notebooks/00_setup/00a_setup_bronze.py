@@ -1,4 +1,8 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "5"
+# ///
 dbutils.widgets.text("bronze_catalog","dbr_dev")
 dbutils.widgets.text("bronze_schema","artemzharkov10_bronze")
 

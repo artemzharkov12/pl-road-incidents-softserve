@@ -37,3 +37,22 @@ resources:
             - task_key: 03b_gold_accidents_weather_merge
           notebook_task:
             notebook_path: ../notebooks/03_gold/03c_gold_algorithm_of_claster_weight.ipynb
+
+    history_car_accident_orchestrate_pipeline:
+      name: "History_Car_Accident_Pipelines_Orchestrator_${bundle.target}"
+      tasks:
+        - task_key: run_bronze_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.bronze_pipeline.id}
+            
+        - task_key: run_silver_pipeline
+          depends_on:
+            - task_key: run_bronze_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.silver_pipeline.id}
+            
+        - task_key: run_gold_pipeline
+          depends_on:
+            - task_key: run_silver_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.gold_pipeline.id}
