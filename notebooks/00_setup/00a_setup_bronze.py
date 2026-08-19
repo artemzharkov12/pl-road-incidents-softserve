@@ -9,6 +9,9 @@ BRONZE_SCHEMA = dbutils.widgets.get("bronze_schema")
 
 spark.sql(f"CREATE DATABASE IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}.raw_data")
+spark.sql(f"CREATE VOLUME IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}.checkpoints")
+
+
 
 # COMMAND ----------
 

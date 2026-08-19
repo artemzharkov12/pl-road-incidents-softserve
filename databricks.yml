@@ -14,6 +14,9 @@ variables:
   schema:
     description: The schema to use
     default: artemzharkov10_bronze
+  prod_cluster_id:
+    description: "Cluster ID for production GP1"
+    default: "0702-132442-toro5spu"
 
 targets:
   dev:
@@ -35,3 +38,21 @@ targets:
     permissions:
       - user_name: artemzharkov10@softserve.academy
         level: CAN_MANAGE
+    resources:
+      jobs:
+        history_voivodeship_weather:
+          tasks:
+            - task_key: 01a_bronze_history_voivodeship
+              existing_cluster_id: ${var.prod_cluster_id}
+            - task_key: 02a_silver_history_voivodeship
+              existing_cluster_id: ${var.prod_cluster_id}
+            - task_key: 03a_gold_clustering_weather
+              existing_cluster_id: ${var.prod_cluster_id}
+
+        Algorithm_Of_Weather_Clustering:
+          tasks:
+            - task_key: 03b_gold_accidents_weather_merge
+              existing_cluster_id: ${var.prod_cluster_id}
+            - task_key: 03c_gold_algorithm_of_claster_weight
+              existing_cluster_id: ${var.prod_cluster_id}
+    
