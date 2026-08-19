@@ -2,18 +2,19 @@ from pyspark import pipelines as dp
 from pyspark.sql import functions as F
 
 
-
-# GOLD_CATALOG = spark.conf.get("gold_catalog", "dbr_dev")
-# GOLD_SCHEMA = spark.conf.get("gold_schema", "artemzharkov10_gold")
+GOLD_CATALOG = spark.conf.get("gold_catalog", "dbr_dev")
+GOLD_SCHEMA = spark.conf.get("gold_schema", "artemzharkov10_gold")
+SILVER_CATALOG = spark.conf.get("silver_catalog", "dbr_dev")
+SILVER_SCHEMA = spark.conf.get("silver_schema", "artemzharkov10_silver")
 
 
 #  fact_accident_summary ===========
-@dlt.table(name = "gold_fact_accident_summary")
+@dp.table(
+    name="gold_fact_accident_summary",
+    catalog=GOLD_CATALOG,
+    schema=GOLD_SCHEMA
+)
 def create_gold_fact_accident_summary():
-
-    SILVER_CATALOG = spark.conf.get("silver_catalog", "dbr_dev")
-    SILVER_SCHEMA = spark.conf.get("silver_schema", "artemzharkov10_silver")
-
     df_silver_accidents = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_accidents")
     df_silver_participants = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_participants")
 
@@ -41,16 +42,15 @@ def create_gold_fact_accident_summary():
         )
     )
     return fact_accident_summary
-    # fact_accident_summary.format("delta").mode("overwrite").saveAsTable(f"{GOLD_CATALOG}.{GOLD_SCHEMA}.gold_fact_accident_summary")
 
 
 #  fact_accident_details ==========
-@dlt.table(name = "gold_fact_accident_details")
+@dp.table(
+    name="gold_fact_accident_details",
+    catalog=GOLD_CATALOG,
+    schema=GOLD_SCHEMA
+)
 def create_gold_fact_accident_details():
-
-    SILVER_CATALOG = spark.conf.get("silver_catalog", "dbr_dev")
-    SILVER_SCHEMA = spark.conf.get("silver_schema", "artemzharkov10_silver")
-
     df_silver_accidents = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_accidents")
     df_silver_vehicles = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_vehicles")
     df_silver_participants = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_participants")
@@ -69,24 +69,3 @@ def create_gold_fact_accident_details():
         .withColumn("is_alcohol",F.when(F.col("blood_alcohol_level") > 0.05, True).otherwise(False))
     )
     return fact_accident_details
-    # fact_accident_details.format("delta").mode("overwrite").saveAsTable(f"{GOLD_CATALOG}.{GOLD_SCHEMA}.gold_fact_accident_details")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
