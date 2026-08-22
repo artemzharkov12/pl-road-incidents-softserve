@@ -1,19 +1,13 @@
 from pyspark import pipelines as dp
 from pyspark.sql import functions as F
 
-
-GOLD_CATALOG = spark.conf.get("gold_catalog", "dbr_dev")
-GOLD_SCHEMA = spark.conf.get("gold_schema", "artemzharkov10_gold")
+# Оставляем только параметры для чтения из Silver
 SILVER_CATALOG = spark.conf.get("silver_catalog", "dbr_dev")
 SILVER_SCHEMA = spark.conf.get("silver_schema", "artemzharkov10_silver")
 
 
 #  fact_accident_summary ===========
-@dp.table(
-    name="gold_fact_accident_summary",
-    catalog=GOLD_CATALOG,
-    schema=GOLD_SCHEMA
-)
+@dp.table(name="gold_fact_accident_summary")
 def create_gold_fact_accident_summary():
     df_silver_accidents = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_accidents")
     df_silver_participants = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_participants")
@@ -45,11 +39,7 @@ def create_gold_fact_accident_summary():
 
 
 #  fact_accident_details ==========
-@dp.table(
-    name="gold_fact_accident_details",
-    catalog=GOLD_CATALOG,
-    schema=GOLD_SCHEMA
-)
+@dp.table(name="gold_fact_accident_details")
 def create_gold_fact_accident_details():
     df_silver_accidents = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_accidents")
     df_silver_vehicles = spark.table(f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_sewik_vehicles")

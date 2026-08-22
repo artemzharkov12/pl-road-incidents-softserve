@@ -1,0 +1,11 @@
+resources:
+  pipelines:
+    realtime_road_hazard_scoring:
+      name: realtime_road_hazard_scoring
+      libraries:
+        - glob:
+            include: ../src/realtime_road_hazard_scoring/transformations/**
+      serverless: true
+      catalog: dbr_dev
+      schema: artemzharkov10_bronze
+      root_path: ../src/realtime_road_hazard_scoring
