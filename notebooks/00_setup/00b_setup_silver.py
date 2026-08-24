@@ -1,4 +1,8 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "5"
+# ///
 dbutils.widgets.text("silver_catalog","dbr_dev")
 dbutils.widgets.text("silver_schema","artemzharkov10_silver")
 
@@ -65,3 +69,6 @@ spark.sql(f"CREATE VOLUME IF NOT EXISTS {SILVER_CATALOG}.{SILVER_SCHEMA}.checkpo
 #         blood_alcohol_level DOUBLE
 #     )
 # """)
+
+# COMMAND ----------
+
