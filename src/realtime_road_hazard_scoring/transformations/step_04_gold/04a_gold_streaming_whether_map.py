@@ -1,14 +1,23 @@
 from pyspark import pipelines as dp
 import pyspark.sql.functions as F
 
-TEMP_WATER_FROST = int(spark.conf.get("TEMP_WATER_FROST", "-1"))
-PRECIP_DRY_MAX = int(spark.conf.get("PRECIP_DRY_MAX", "0"))
-PRECIP_LIGHT_MAX = int(spark.conf.get("PRECIP_LIGHT_MAX", "2"))
+
+dbutils.widgets.text("TEMP_WATER_FROST", "-1")
+dbutils.widgets.text("PRECIP_DRY_MAX", "0")
+dbutils.widgets.text("PRECIP_LIGHT_MAX", "2")
+
+TEMP_WATER_FROST = int(dbutils.widgets.get("TEMP_WATER_FROST"))
+PRECIP_DRY_MAX = int(dbutils.widgets.get("PRECIP_DRY_MAX"))
+PRECIP_LIGHT_MAX = int(dbutils.widgets.get("PRECIP_LIGHT_MAX"))
 
 
+dbutils.widgets.text("silver_catalog", "dbr_dev")
+dbutils.widgets.text("silver_schema", "artemzharkov10_silver")
 dbutils.widgets.text("gold_catalog", "dbr_dev")
 dbutils.widgets.text("gold_schema", "artemzharkov10_gold")
 
+SILVER_CATALOG = dbutils.widgets.get("silver_catalog")
+SILVER_SCHEMA = dbutils.widgets.get("silver_schema")
 GOLD_CATALOG = dbutils.widgets.get("gold_catalog")
 GOLD_SCHEMA = dbutils.widgets.get("gold_schema")
 
@@ -17,7 +26,7 @@ GOLD_WEIGHTS_TABLE = f"{GOLD_CATALOG}.{GOLD_SCHEMA}.gold_weather_cluster_weights
 @dp.table(name = f"{GOLD_SCHEMA}.gold_realtime_road_hazard")
 def gold_realtime_road_hazard_data():
     
-    df_silver = dp.read_stream("artemzharkov10_silver.silver_streaming_weather")
+    df_silver = dp.read_stream(f"{SILVER_SCHEMA}.silver_streaming_weather")
     df_clustered = (
         df_silver
         .withColumn(
