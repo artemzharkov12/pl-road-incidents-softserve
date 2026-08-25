@@ -10,7 +10,7 @@ rules = {
     "valid_precipitation": "precipitation_mm >= 0"
 }
 
-# Delata constrains level + data quality expectations
+# Delta constrains level + data quality expectations
 @dp.table(
     name=f"{SILVER_SCHEMA}.silver_streaming_weather",
     schema="""
@@ -26,7 +26,7 @@ rules = {
 )
 @dp.expect_all_or_drop(rules)
 def silver_streaming_weather_data():
-    bronze_df = dp.read_stream("bronze_streaming_weather")
+    bronze_df = dp.read_stream("bronze_streaming_weather") # all transformation logic in silver_logic.py
     return parse_weather_payload(bronze_df)
 
 # via filter(invalid_condition) system write just invalid records 

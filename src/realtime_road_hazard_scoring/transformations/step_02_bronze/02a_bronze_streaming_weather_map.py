@@ -12,6 +12,7 @@ def bronze_streaming_weather_data():
     raw_df = (
         spark.readStream
         .format("kafka")
+        # .option("failOnDataLoss", "false") # just for dev org
         .option("kafka.bootstrap.servers", BOOTSTRAP)
         .option("subscribe", "artemzharkov10_evh") 
         .option("kafka.security.protocol", "SASL_SSL")
