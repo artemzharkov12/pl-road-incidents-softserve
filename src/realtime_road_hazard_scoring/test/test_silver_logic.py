@@ -12,11 +12,15 @@ if project_root not in sys.path:
 
 from transformations.step_03_silver.silver_logic import parse_weather_payload
 
+HOST = dbutils.secrets.get(scope="default2", key="artem-dev-host-https")
+TOKEN = dbutils.secrets.get(scope="default2", key="artem-dev-serverless-token")
+
 @pytest.fixture(scope="session")
 def spark():
+
     return DatabricksSession.builder.remote(
-        host="https://dbc-6d6709e1-4e5d.cloud.databricks.com/", 
-        token="dapi538a5e9d6db1b7e30bfda0001f0f154a"
+        host = HOST, 
+        token = TOKEN
     ).serverless().getOrCreate()
 
 def test_parse_weather_payload(spark):

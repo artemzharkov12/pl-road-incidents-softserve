@@ -55,3 +55,14 @@ resources:
             - task_key: run_silver_pipeline
           pipeline_task:
             pipeline_id: ${resources.pipelines.gold_pipeline.id}
+
+    # dqx_quality_audit_job:
+    #   name: "DQX_Quality_Audit"
+    #   tasks:
+    #     - task_key: run_dqx_script
+    #       existing_cluster_id: ${var.prod_cluster_id}
+    #       spark_python_task:
+    #         python_file: ../src/realtime_road_hazard_scoring/test/test_DQX_framework.py
+    #       libraries:
+    #         - pypi:
+    #             package: "databricks-labs-dqx==0.16.0"

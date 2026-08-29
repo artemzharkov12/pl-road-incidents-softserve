@@ -15,6 +15,13 @@ variables:
   prod_cluster_id:
     description: "Cluster ID for production GP1"
     default: "0702-132442-toro5spu"
+  #============================================
+  cluster_spark_version:
+    description: "Spark version for jobs"
+    default: "13.3.x-scala2.12"
+  cluster_node_type:
+    description: "Node type ID for jobs"
+  #========================
 
 targets:
   dev:
@@ -25,6 +32,7 @@ targets:
     variables:
       catalog: dbr_dev
       schema: ${workspace.current_user.short_name}
+      cluster_node_type: "i3.xlarge"
       
   prod:
     mode: production
@@ -54,6 +62,10 @@ targets:
               existing_cluster_id: ${var.prod_cluster_id}
             - task_key: 03c_gold_algorithm_of_claster_weight
               existing_cluster_id: ${var.prod_cluster_id}
+        # dqx_quality_audit_job:
+        #   tasks:
+        #     - task_key: run_dqx_script
+        #       existing_cluster_id: ${var.prod_cluster_id}
 
       pipelines:
         bronze_pipeline:
