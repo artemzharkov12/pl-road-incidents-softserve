@@ -1,16 +1,20 @@
+# Databricks notebook source
+# MAGIC %pip install databricks-labs-dqx==0.16.0
+
+# COMMAND ----------
 import databricks.labs.dqx.functions as check_funcs
 from databricks.labs.dqx.engine import DQEngine
 from databricks.labs.dqx.rule import DQRowRule
 from datetime import datetime, timedelta
 import pyspark.sql.functions as F
 
-
 dbutils.widgets.text("silver_catalog", "dbr_dev")
 dbutils.widgets.text("silver_schema", "artemzharkov10_silver")
 SILVER_CATALOG = dbutils.widgets.get("silver_catalog")
 SILVER_SCHEMA = dbutils.widgets.get("silver_schema")
-SILVER_TABLE = f"{CATALOG}.{SILVER_SCHEMA}.silver_streaming_weather"
-QUARANTINE_TABLE = f"{CATALOG}.{SILVER_SCHEMA}.silver_streaming_weather_quarantine"
+
+SILVER_TABLE = f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_streaming_weather"
+QUARANTINE_TABLE = f"{SILVER_CATALOG}.{SILVER_SCHEMA}.silver_streaming_weather_quarantine"
 
 dq_engine = DQEngine()
 df_silver = spark.read.table(SILVER_TABLE)

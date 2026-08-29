@@ -4,7 +4,7 @@ import pytest
 from pyspark.sql.types import TimestampType
 from databricks.connect import DatabricksSession
 
-#go to the global directory
+# go to the global directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, ".."))
 if project_root not in sys.path:
@@ -12,16 +12,9 @@ if project_root not in sys.path:
 
 from transformations.step_03_silver.silver_logic import parse_weather_payload
 
-HOST = dbutils.secrets.get(scope="default2", key="artem-dev-host-https")
-TOKEN = dbutils.secrets.get(scope="default2", key="artem-dev-serverless-token")
-
 @pytest.fixture(scope="session")
 def spark():
-
-    return DatabricksSession.builder.remote(
-        host = HOST, 
-        token = TOKEN
-    ).serverless().getOrCreate()
+    return DatabricksSession.builder.serverless().getOrCreate()
 
 def test_parse_weather_payload(spark):
     fake_json = '{"grid_id": "G1", "latitude": 52.0, "longitude": 21.0, "time": "2026-08-23 10:00:00", "precipitation_mm": 2.5, "soil_temperature_c": 15.0}'
@@ -40,4 +33,3 @@ def test_parse_weather_payload(spark):
     assert result["soil_temperature_c"] == 15.0
     assert result["weather_time"] is not None
     assert isinstance(result_df.schema["weather_time"].dataType, TimestampType)
-
