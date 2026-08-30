@@ -19,8 +19,8 @@ variables:
   # cluster_spark_version:
   #   description: "Spark version for jobs"
   #   default: "13.3.x-scala2.12"
-  # cluster_node_type:
-  #   description: "Node type ID for jobs"
+  cluster_node_type:
+    description: "Node type ID for jobs"
   #========================
 
 targets:

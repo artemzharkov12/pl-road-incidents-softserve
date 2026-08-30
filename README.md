@@ -1,47 +1,64 @@
-# Car Accident ETL Pipeline (SEWIK) & Analytics
+# DriveRisk Intelligence (DRI)
 
 ## Project Description
-The project is a complete end-to-end data processing pipeline (ETL) and analytical solution for road traffic accidents in Poland. The process is implemented using Databricks Lakeflow Spark Declarative Pipelines (formerly Delta Live Tables). 
+DriveRisk Intelligence (DRI) is a complete end-to-end data processing pipeline and analytical solution for evaluating road traffic accidents in Poland. The system detects hazardous weather conditions in real-time, classifies them by the level of danger to drivers, and visualizes the risk on an interactive map. 
 
-The architecture strictly follows the Medallion pattern (Bronze, Silver, Gold) with physical isolation of database schemas governed by Unity Catalog. Beyond data engineering, the project features a fully functional analytical layer, including a Star-Schema dimensional model, Row-Level/Column-Level Security (RLS/CLS), AI/BI interactive dashboards, AI-powered natural-language querying (Genie Spaces), and automated data quality alerts.
+The architecture strictly follows the Medallion pattern (Bronze, Silver, Gold) with physical isolation of database schemas governed by Databricks Unity Catalog.
+
+### The "Frequency Paradox" & Why We Rejected AI
+Using standard Machine Learning for this problem introduces critical logical errors due to highly unbalanced data.
+* **Missing Negative Data:** Police databases only record actual incidents, making it impossible to train an AI without fabricating fake "safe" data.
+* **The Frequency Paradox:** Warm, dry weather is the most common condition throughout the year, meaning the absolute majority of accidents occur on clear days. An unsupervised AI blindly follows raw volume and falsely concludes that a sunny day is the most dangerous weather.
+
+**The Solution:** DRI uses a custom algorithm to calculate **relative risk**. By dividing the absolute number of accidents by the total historical background hours of a specific weather cluster, the system extracts the true accidents-per-hour rate, proving that events like snowstorms carry a much higher relative risk.
+
+## Architecture Pipelines
+The project is split into two core workflows orchestrated via Databricks Asset Bundles (DABs):
+
+* **Historical Data & Risk Calculation (Batch Pipeline):** Ingests historical SEWIK car accident records from GOV.PL and NASA-POWER weather data (2018–2024) across 16 Polish voivodeships. Weather metrics are grouped into simplified clusters (e.g., Frost, HeavyRain), merged with accident data by time and location, and transformed into a Star Schema and a static Normalized Risk Index.
+* **Real-Time Hazard Scoring (Streaming Pipeline):** An external producer fetches current conditions from the Open-Weather API every 15 minutes, pushing JSON strings to Azure Event Hubs. Delta Live Tables (DLT) Expectations handle built-in quality control in the Silver layer, routing missing coordinates to a quarantine table to prevent system crashes. Valid streams are instantly joined with the historical weights table in the Gold layer to output live hazard scores.
 
 ## Tech Stack
 * **Data Engineering:** Apache Spark (PySpark), Databricks Lakeflow (Delta Live Tables), Auto Loader (`cloudFiles`)
+* **Data Quality:** Databricks Labs DQX Framework, DLT Expectations
 * **Orchestration & CI/CD:** Databricks Asset Bundles (DABs)
-* **Governance:** Databricks Unity Catalog (Grants, Row-Level Security, Column-Level Security)
-* **Analytics & BI:** Databricks AI/BI Dashboards, Genie Spaces, Databricks SQL Alerts
-
-## Code Navigation (For Reviewers)
-The core logic of the declarative pipelines and orchestration can be found in the following files:
-* **Bronze Layer Ingestion:** `src/car_accident_pl_etl/transformations/02_bronze_ingestion.py`
-* **Silver Layer (Transformations & Expectations):** `src/car_accident_pl_etl/transformations/03_silver_transformations.py`
-* **Gold Layer (Star Schema & Aggregations):** `src/car_accident_pl_etl/transformations/04a_gold_dimentions.py` & `04b_gold_facts.py`
-* **Data Governance (RLS/CLS):** `SQL/test_row_level_security.dbquery.ipynb`, `SQL/test_column_level_security.dbquery.ipynb`
-* **Infrastructure Configuration (Pipelines & Jobs):** `resources/` directory and `databricks.yml`
+* **Governance:** Databricks Unity Catalog (Row-Level Security, Column-Level Security)
+* **Analytics & BI:** Databricks AI/BI Dashboards (tracking accident locations, holiday peaks, and demographic stats like 68% male accident rates), Databricks SQL Alerts
+* **Infrastructure:** Azure Event Hubs, Azure Databricks
 
 ## Project Structure
-The repository is organized to maintain modern Databricks Asset Bundles (DABs) structure alongside Databricks SQL assets and reference notebooks.
+The repository is organized to maintain a modern DABs architecture, separating source code, configurations, and analytical assets.
 
 ```text
-├── notebooks/               
-│   ├── 00_setup/             # Infrastructure and schema initialization
-│   └── 01_landing/           # Landing zone logic / classical scripts
-├── SQL/                      # Databricks SQL Assets (Analytics & Governance)
-│   ├── Car accidents 2018-2024 pl.lvdash.json    # AI/BI Dashboard configuration
-│   ├── daily_ingestion_volume_trigger.dbalert.json # Data volume monitoring alert
-│   ├── test_column_level_security.dbquery.ipynb  # CLS (Data masking) scripts
-│   └── test_row_level_security.dbquery.ipynb     # RLS (Data filtering) scripts
-├── resources/                
-├── src/                      
-│   └── car_accident_pl_etl/
-│       └── transformations/
-│           ├── 02_bronze_ingestion.py
-│           ├── 03_silver_transformations.py
-│           ├── 04a_gold_dimentions.py
-│           └── 04b_gold_facts.py                 
+├── notebooks/                     
+│   ├── 00_setup/                  # Infrastructure and schema initialization
+│   ├── 01_bronze/                 
+│   ├── 02_silver/                 
+│   └── 03_gold/                   
+├── Presentation Results/          
+│   ├── cache/
+│   ├── Dashboards.ipynb           
+│   └── Dashboards_history.ipynb   
+├── resources/                     # DABs orchestration configurations
+│   ├── car_accident_pl_etl.pipeline.yml
+│   ├── jobs_config.yml
+│   └── realtime_road_hazard_scoring.pipeline.yml
+├── sql/                           # Databricks SQL Assets & Governance
+│   ├── Alert_lab7.dbquery.ipynb
+│   ├── Car accidents 2018-2024 pl.lvdash.json 
+│   ├── test_column_level_security.dbquery.ipynb
+│   └── test_row_level_security.dbquery.ipynb   
+├── src/                           # Core ETL Pipeline Source Code
+│   ├── car_accident_pl_etl/
+│   │   ├── transformations/       
+│   │   ├── README.md
+│   │   └── requirements.txt
+│   └── realtime_road_hazard_scoring/
+│       ├── test/                  # DQX Audits and Pytest files (e.g., test_DQX_framework.py)
+│       ├── transformations/       # Streaming Medallion scripts
+│       ├── README.md
+│       └── requirements.txt
 ├── .gitignore                
-├── databricks.yml            
-├── pyproject.toml            
-├── README.md   
-└── Traffic Accident Analysis   
-           
+├── databricks.yml                 
+├── pyproject.toml                 
+└── README.md                      
