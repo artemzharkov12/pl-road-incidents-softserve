@@ -19,9 +19,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytest databricks-connect databricks-labs-dqx
-          # Если есть requirements.txt, раскомментируйте строку ниже:
-          # pip install -r src/car_accident_pl_etl/requirements.txt
+          # pip install pytest databricks-connect databricks-labs-dqx
+          pip install -r src/car_accident_pl_etl/requirements.txt
 
       - name: Run Pytest
         env:

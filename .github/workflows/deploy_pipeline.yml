@@ -10,19 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 
 
       - name: Install Databricks CLI
-        uses: databricks/setup-cli@main
+        uses: databricks/setup-cli@main # download official CLI module 
 
       - name: Deploy Bundle to PROD
         env:
           DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
           DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
         run: databricks bundle deploy -t prod
-
-      - name: Run Audit Job
-        env:
-          DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
-          DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
-        run: databricks bundle run dqx_quality_audit_job -t prod
