@@ -1,12 +1,23 @@
-# Databricks notebook source
-# MAGIC %pip install databricks-labs-dqx==0.16.0
+import sys
+import subprocess
+import importlib
 
-# COMMAND ----------
-import databricks.labs.dqx.functions as check_funcs
+subprocess.check_call([
+    sys.executable, "-m", "pip", "install", "databricks-labs-dqx==0.16.0"
+])
+importlib.invalidate_caches()
+
+from databricks.labs.dqx import check_funcs
 from databricks.labs.dqx.engine import DQEngine
 from databricks.labs.dqx.rule import DQRowRule
+
 from datetime import datetime, timedelta
 import pyspark.sql.functions as F
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder.getOrCreate()
+from pyspark.dbutils import DBUtils
+dbutils = DBUtils(spark)
 
 dbutils.widgets.text("silver_catalog", "dbr_dev")
 dbutils.widgets.text("silver_schema", "artemzharkov10_silver")
@@ -40,5 +51,4 @@ if not df_recent.rdd.isEmpty():
         )
     ]
     valid_df, error_df = dq_engine.apply_checks_and_split(df_recent, dq_checks)
-    valid_df.write.format("delta").mode("append").saveAsTable(SILVER_TABLE)
     error_df.write.format("delta").mode("append").saveAsTable(QUARANTINE_TABLE)
