@@ -15,13 +15,8 @@ variables:
   prod_cluster_id:
     description: "Cluster ID for production GP1"
     default: "0702-132442-toro5spu"
-  #============================================
-  # cluster_spark_version:
-  #   description: "Spark version for jobs"
-  #   default: "13.3.x-scala2.12"
   cluster_node_type:
     description: "Node type ID for jobs"
-  #========================
 
 targets:
   dev:

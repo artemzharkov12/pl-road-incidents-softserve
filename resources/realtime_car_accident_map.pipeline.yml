@@ -6,6 +6,6 @@ resources:
         - glob:
             include: ../src/realtime_car_accident_map/transformations/**
       serverless: true
-      catalog: workspace
+      catalog: dbr_dev
       schema: ${workspace.current_user.short_name}
       root_path: ../src/realtime_car_accident_map
