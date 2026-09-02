@@ -11,6 +11,7 @@ def get_weather_schema():
         StructField("soil_temperature_c", DoubleType(), True)
     ])
 
+
 def parse_weather_payload(df):
     schema = get_weather_schema()
     return (
