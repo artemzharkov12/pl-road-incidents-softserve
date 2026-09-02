@@ -1,0 +1,11 @@
+resources:
+  pipelines:
+    realtime_car_accident_map:
+      name: realtime_car_accident_map
+      libraries:
+        - glob:
+            include: ../src/realtime_car_accident_map/transformations/**
+      serverless: true
+      catalog: dbr_dev
+      schema: ${workspace.current_user.short_name}
+      root_path: ../src/realtime_car_accident_map
