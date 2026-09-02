@@ -1,0 +1,38 @@
+name: CI (Validate & Test pipline)
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install pytest databricks-connect databricks-sdk
+          pip install -r src/car_accident_pl_etl/requirements.txt
+
+      - name: Run Pytest
+        env:
+          DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
+          DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
+        run: pytest src/realtime_road_hazard_scoring/test/test_silver_logic.py
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Bundle Validate
+        env:
+          DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
+          DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
+        run: databricks bundle validate -t prod

@@ -1,0 +1,25 @@
+name: CD (Deploy to PROD)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy_to_prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Deploy Bundle to PROD
+        env:
+          DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
+          DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
+        run: databricks bundle deploy -t prod

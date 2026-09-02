@@ -37,6 +37,7 @@ targets:
     variables:
       catalog: dbr_dev
       schema: prod
+      cluster_node_type: "Standard_F4"
     permissions:
       - user_name: artemzharkov10@softserve.academy
         level: CAN_MANAGE
@@ -57,10 +58,17 @@ targets:
               existing_cluster_id: ${var.prod_cluster_id}
             - task_key: 03c_gold_algorithm_of_claster_weight
               existing_cluster_id: ${var.prod_cluster_id}
-        # dqx_quality_audit_job:
-        #   tasks:
-        #     - task_key: run_dqx_script
-        #       existing_cluster_id: ${var.prod_cluster_id}
+
+        dqx_quality_audit_job:
+          tasks:
+            - task_key: run_dqx_quality_checks
+              existing_cluster_id: ${var.prod_cluster_id}
+
+      dashboards:
+        car_accidents_dashboard:
+          display_name: "Car Accidents Analytics"
+          file_path: ./sql/Car accidents 2018-2024 pl.lvdash.json
+          warehouse_id: ${var.prod_warehouse_id}
 
       pipelines:
         bronze_pipeline:
