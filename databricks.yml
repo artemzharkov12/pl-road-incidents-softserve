@@ -62,6 +62,11 @@ targets:
             - task_key: 03c_gold_algorithm_of_claster_weight
               existing_cluster_id: ${var.prod_cluster_id}
 
+        dqx_quality_audit_job:
+          tasks:
+            - task_key: run_dqx_quality_checks
+              existing_cluster_id: ${var.prod_cluster_id}
+
       dashboards:
         car_accidents_dashboard:
           display_name: "Car Accidents Analytics"
