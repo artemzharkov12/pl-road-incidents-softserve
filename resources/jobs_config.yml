@@ -55,29 +55,12 @@ resources:
             - task_key: run_silver_pipeline
           pipeline_task:
             pipeline_id: ${resources.pipelines.gold_pipeline.id}
-
-# GP1
     dqx_quality_audit_job:
           name: "DQX_Quality_Audit"
           tasks:
             - task_key: run_dqx_quality_checks
               spark_python_task:
-                python_file: ../src/realtime_road_hazard_scoring/test/run_quality_checks.py
+                python_file: ../src/realtime_road_hazard_scoring/test/test_DQX_framework.py
               libraries:
                 - pypi:
                     package: "databricks-labs-dqx==0.16.0"
-    # dqx_quality_audit_job:
-    #       name: "DQX_Quality_Audit"
-    #       tasks:
-    #         - task_key: run_dqx_script
-    #           new_cluster:
-    #             spark_version: "17.3.x-scala2.13"
-    #             node_type_id: "Standard_F4"
-    #             num_workers: 0
-    #             spark_conf:
-    #               "spark.databricks.cluster.profile": "singleNode"
-    #               "spark.master": "local[*]"
-    #             custom_tags:
-    #               "ResourceClass": "SingleNode"
-    #           spark_python_task:
-    #             python_file: ../src/realtime_road_hazard_scoring/test/test_DQX_framework.py

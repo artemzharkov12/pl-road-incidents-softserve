@@ -1,4 +1,4 @@
-name: CI Pipeline (Validate & Test)
+name: CI (Validate & Test pipline)
 
 on:
   pull_request:
@@ -19,14 +19,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # pip install pytest databricks-connect databricks-labs-dqx
+          pip install pytest databricks-connect databricks-sdk
           pip install -r src/car_accident_pl_etl/requirements.txt
 
       - name: Run Pytest
         env:
           DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
           DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
-        run: pytest src/realtime_road_hazard_scoring/test/
+        run: pytest src/realtime_road_hazard_scoring/test/test_silver_logic.py
 
       - name: Install Databricks CLI
         uses: databricks/setup-cli@main
