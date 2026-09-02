@@ -15,6 +15,9 @@ variables:
   prod_cluster_id:
     description: "Cluster ID for production GP1"
     default: "0702-132442-toro5spu"
+  prod_warehouse_id:
+    description: "SQL warehouse"
+    default: "3ed106620db591d9"
   cluster_node_type:
     description: "Node type ID for jobs"
 
