@@ -1,0 +1,13 @@
+resources:
+  pipelines:
+    realtime_road_accidents:
+      name: realtime_road_accidents
+      configuration:
+        silver_schema: "artemzharkov10_silver"
+      libraries:
+        - glob:
+            include: ../src/realtime_road_accidents/transformations/**
+      serverless: true
+      catalog: dbr_dev
+      schema: artemzharkov10_bronze
+      root_path: ../src/realtime_road_accidents
