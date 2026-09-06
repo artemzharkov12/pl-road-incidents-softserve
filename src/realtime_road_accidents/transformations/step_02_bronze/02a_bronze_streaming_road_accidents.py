@@ -1,22 +1,25 @@
-from pyspark import piplines as dp
+from pyspark import pipelines as dp
 from pyspark.sql.functions import current_timestamp
 
-EH_CONNECTION_STRING = dbutils.secret.get(scope="default2", key="artem-evh02-connection")
-BOOTSTRAP = "evhpl24databricks.servicebus.windows.net:9093"
-JAAS = f'kafkashaded.org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="{EH_CONN_STR}";'
+EH_CONNECTION_STRING = dbutils.secrets.get(scope = "default2", key = "artem-evh02-connector")
+
+
+BOOTSTRAP = "evhpl24databricks02.servicebus.windows.net:9093"
+JAAS = f'kafkashaded.org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="{EH_CONNECTION_STRING}";'
 
 @dp.table(name = "bronze_streaming_road_accidents")
 def bronze_streaming_road_accidents():
-        raw_df = (
+    raw_df = (
         spark.readStream
         .format("kafka")
-        # .option("failOnDataLoss", "false") # just for dev org
+        .option("failOnDataLoss", "false")
         .option("kafka.bootstrap.servers", BOOTSTRAP)
-        .option("subscribe", "artemzharkov10_evh") 
+        .option("subscribe", "artemzharkov10_car_accidents_stream") 
         .option("kafka.security.protocol", "SASL_SSL")
         .option("kafka.sasl.mechanism", "PLAIN")
         .option("kafka.sasl.jaas.config", JAAS)
         .option("startingOffsets", "earliest")
+        .option("maxOffsetsPerTrigger", "5000")
         .load()
     )
     return (
