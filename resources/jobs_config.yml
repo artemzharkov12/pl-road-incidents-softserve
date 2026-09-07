@@ -20,7 +20,7 @@ resources:
             notebook_path: ../notebooks/03_gold/03a_gold_clustering_weather_conditions.ipynb
 
     Algorithm_Of_Weather_Clustering:
-      name: "Algorithm_Of_Weather_Clustering_Weights"
+      name: "Algorithm_Of_Weather_Clustering"
       tasks:
         - task_key: history_voivodeship_weather_etl
           run_job_task:
@@ -38,7 +38,7 @@ resources:
           notebook_task:
             notebook_path: ../notebooks/03_gold/03c_gold_algorithm_of_claster_weight.py
     history_car_accident_orchestrate_pipeline:
-      name: "History_Car_Accident_Pipelines_Orchestrator_${bundle.target}"
+      name: "History_Car_Accident_Pipelines_Orchestrator"
       tasks:
         - task_key: run_bronze_pipeline
           pipeline_task:
