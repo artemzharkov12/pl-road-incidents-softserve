@@ -15,8 +15,28 @@ jobs:
       - name: Install Databricks CLI
         uses: databricks/setup-cli@main
 
-      - name: Deploy Bundle to PROD
+      - name: Deploy to PROD
         env:
           DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
           DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
         run: databricks bundle deploy -t prod
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Databricks SDK
+        run: pip install databricks-sdk
+
+      - name: Trigger DLT Pipeline and Monitor Status
+        env:
+          DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
+          DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
+        run: python .github/scripts/databricks_cli_run_pipeline.py --pipeline-name "realtime_road_accidents"
+        
+      - name: Trigger Job and Monitor Status
+        env:
+          DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
+          DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
+        run: python .github/scripts/databricks_cli_run_job.py --job-name "history_voivodeship_weather_etl"

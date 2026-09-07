@@ -73,7 +73,7 @@ dp.create_streaming_table(
 # Take data from View Table (micro-batch) than compare with existing rows and implament SCD2 if existing some changing or dedublication if some records are the same
 #SCD2 ====
 dp.apply_changes(
-    target = f"{SILVER_SCHEMA}.silver_streaming_road_accidents",  # ????? when data transformation is did ?
+    target = f"{SILVER_SCHEMA}.silver_streaming_road_accidents",
     source = "silver_road_accidents_valid_view",
     keys=["accident_id"],
     sequence_by=F.col("ingest_timestamp"), # sort by time of enter in stream
