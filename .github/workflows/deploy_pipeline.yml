@@ -19,7 +19,7 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
           DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
-        run: databricks bundle deploy -t prod
+      run: databricks bundle deploy -t prod --auto-approve
 
       - name: Set up Python
         uses: actions/setup-python@v4
