@@ -1,14 +1,15 @@
 from pyspark import pipelines as dp
 from pyspark.sql.functions import current_timestamp
 
-EH_CONNECTION_STRING = dbutils.secrets.get(scope = "default2", key = "artem-evh02-connector")
-
-
-BOOTSTRAP = "evhpl24databricks02.servicebus.windows.net:9093"
-JAAS = f'kafkashaded.org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="{EH_CONNECTION_STRING}";'
 
 @dp.table(name = "bronze_streaming_road_accidents")
 def bronze_streaming_road_accidents():
+    EH_CONNECTION_STRING = dbutils.secrets.get(scope = "default2", key = "artem-evh02-connector")
+
+
+    BOOTSTRAP = "evhpl24databricks02.servicebus.windows.net:9093"
+    JAAS = f'kafkashaded.org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="{EH_CONNECTION_STRING}";'
+
     raw_df = (
         spark.readStream
         .format("kafka")

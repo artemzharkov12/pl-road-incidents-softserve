@@ -1,12 +1,16 @@
-name: CD (Deploy to PROD)
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
-      
+      - 'feature/*' # deploy to dev org
+  workflow_dispatch:
+
 jobs:
-  deploy_to_prod:
+  # just for testing if deploy would be configured before push in main
+  deploy_dev:
+    if: startsWith(github.ref, 'refs/heads/feature/') #check branch
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,11 +19,23 @@ jobs:
       - name: Install Databricks CLI
         uses: databricks/setup-cli@main
 
-      - name: Deploy to PROD
+      - name: Deploy to DEV
         env:
-          DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
-          DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
-        run: databricks bundle deploy -t prod --auto-approve
+          DATABRICKS_HOST: ${{ secrets.DEV_WORKSPACE_URL }}
+          DATABRICKS_TOKEN: ${{ secrets.DEV_TOKEN }}
+        run: databricks bundle deploy -t dev --auto-approve
+
+  # ============================================
+
+  deploy_prod:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -28,6 +44,12 @@ jobs:
 
       - name: Install Databricks SDK
         run: pip install databricks-sdk
+
+      - name: Deploy to PROD
+        env:
+          DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
+          DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
+        run: databricks bundle deploy -t prod --auto-approve
 
       - name: Trigger DLT Pipeline and Monitor Status
         env:
