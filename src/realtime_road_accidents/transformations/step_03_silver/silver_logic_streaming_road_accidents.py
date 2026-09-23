@@ -1,5 +1,4 @@
 import pyspark.sql.functions as F
-from pyspark import pipelines as dp
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, TimestampType, ArrayType
 
 def get_schema():
@@ -15,8 +14,8 @@ def get_schema():
                     StructField("description", StringType(), True)
                 ])), True)
             ]), True)
-        ]))
-
+        ])
+    )
 
 def parse_entities_from_json(df):
     schema = get_schema()
@@ -35,7 +34,7 @@ def parse_entities_from_json(df):
             F.col("json.properties.magnitudeOfDelay").alias("impact_jams"),
             F.to_timestamp(F.col("json.properties.startTime"), "yyyy-MM-dd'T'HH:mm:ss'Z'").alias("start_time"),
             F.concat_ws(", ", F.col("json.properties.events.description")).alias("description"),
-            # To normalize the data, we take the first and last coordinates of the incident. Since the accident has only one coordinate, but the roadwork has a whole list of them, we simply specify the roadwork vectors, and the complete list of coordinates is stored in the `raw_coords_text` column.
+            # To normalize the data, we take the first and last coordinates of the incident.
             F.when(F.col("clean_coords") != "", F.col("coords_array").getItem(0).cast("double")).otherwise(None).alias("start_longitude"),
             F.when(F.col("clean_coords") != "", F.col("coords_array").getItem(1).cast("double")).otherwise(None).alias("start_latitude"),
             F.when(F.col("coords_size") > 2, F.element_at(F.col("coords_array"), -2).cast("double")).otherwise(None).alias("end_longitude"),
@@ -43,5 +42,20 @@ def parse_entities_from_json(df):
             # write all coordinates as a string
             F.col("raw_coords_text").alias("raw_coordinates"),
             F.current_timestamp().alias("ingest_timestamp")
+        )
+        # Business logic for Lab 10: Lakehouse Federation & CDC
+        .withColumn("event_type_description",
+            F.when(F.col("icon_category") == 1, "Accident")
+             .when(F.col("icon_category") == 6, "Traffic Jam")
+             .when(F.col("icon_category") == 7, "Hazard")
+             .when(F.col("icon_category") == 8, "Closed Road")
+             .when(F.col("icon_category") == 9, "Road Works")
+             .when(F.col("icon_category") == 11, "Fog")
+             .otherwise("Other/Unknown")
+        )
+        .withColumn("is_deleted", F.when(F.col("icon_category") == 0, True).otherwise(False))
+        .withColumn("fk_driver_id",
+            F.when(F.col("icon_category") == 1, (F.abs(F.hash(F.col("accident_id"))) % 100 + 1).cast("int"))
+             .otherwise(F.lit(None).cast("int"))
         )
     )

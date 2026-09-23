@@ -26,7 +26,7 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
           DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
-        run: pytest src/realtime_road_hazard_scoring/test/test_silver_logic.py
+        run: pytest src/realtime_road_hazard_scoring/tests/test_silver_logic.py
 
       - name: Install Databricks CLI
         uses: databricks/setup-cli@main
