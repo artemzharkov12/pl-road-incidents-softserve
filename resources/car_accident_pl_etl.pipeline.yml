@@ -5,6 +5,9 @@ resources:
       target: artemzharkov10_bronze
       catalog: ${var.catalog}
       serverless: true
+      configuration:
+        bronze_catalog: ${var.catalog}
+        bronze_schema: artemzharkov10_bronze
       libraries:
         - file:
             path: ../src/car_accident_pl_etl/transformations/02_bronze/02_bronze_ingestion.py
@@ -14,6 +17,9 @@ resources:
       target: artemzharkov10_silver
       catalog: ${var.catalog}
       serverless: true
+      configuration:
+        bronze_catalog: ${var.catalog}
+        bronze_schema: artemzharkov10_bronze 
       libraries:
         - file:
             path: ../src/car_accident_pl_etl/transformations/03_silver/03_silver_transformations.py
@@ -23,6 +29,9 @@ resources:
       target: artemzharkov10_gold
       catalog: ${var.catalog}
       serverless: true
+      configuration:
+        silver_catalog: ${var.catalog}
+        silver_schema: artemzharkov10_silver
       libraries:
         - file:
             path: ../src/car_accident_pl_etl/transformations/04_gold/04a_gold_dimentions.py

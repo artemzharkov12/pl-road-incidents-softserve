@@ -11,6 +11,18 @@ BRONZE_SCHEMA = dbutils.widgets.get("bronze_schema")
 
 # COMMAND ----------
 
+spark.sql(f"CREATE VOLUME IF NOT EXISTS dbr_dev_trial.artemzharkov10_bronze.raw_data")
+spark.sql(f"CREATE VOLUME IF NOT EXISTS dbr_dev_trial.artemzharkov10_bronze.checkpoints")
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC CREATE TABLE dbr_dev_trial.artemzharkov10_bronze.bronze_sewik
+# MAGIC USING DELTA
+# MAGIC LOCATION 'abfss://artemzharkov10@dlspl21databricks.dfs.core.windows.net/bronze/bronze_sewik_export';
+
+# COMMAND ----------
+
 spark.sql(f"CREATE DATABASE IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}.raw_data")
 spark.sql(f"CREATE VOLUME IF NOT EXISTS {BRONZE_CATALOG}.{BRONZE_SCHEMA}.checkpoints")
