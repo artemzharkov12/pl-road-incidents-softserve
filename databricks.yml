@@ -21,6 +21,13 @@ variables:
   cluster_node_type:
     description: "Node type ID for jobs"
 
+resources:
+  dashboards:
+    car_accidents_dashboard:
+      display_name: "Car Accidents Analytics"
+      file_path: ./sql/Car accidents 2018-2024 pl.lvdash.json
+      warehouse_id: ${var.prod_warehouse_id}
+
 targets:
   dev:
     mode: development
@@ -44,41 +51,16 @@ targets:
     permissions:
       - user_name: artemzharkov10@softserve.academy
         level: CAN_MANAGE
-    resources:
-      jobs:
-        history_voivodeship_weather:
-          tasks:
-            - task_key: 01a_bronze_history_voivodeship
-              existing_cluster_id: ${var.prod_cluster_id}
-            - task_key: 02a_silver_history_voivodeship
-              existing_cluster_id: ${var.prod_cluster_id}
-            - task_key: 03a_gold_clustering_weather
-              existing_cluster_id: ${var.prod_cluster_id}
 
-        Algorithm_Of_Weather_Clustering:
-          tasks:
-            - task_key: 03b_gold_accidents_weather_merge
-              existing_cluster_id: ${var.prod_cluster_id}
-            - task_key: 03c_gold_algorithm_of_claster_weight
-              existing_cluster_id: ${var.prod_cluster_id}
-        History_car_accident_orchestrate_pipeline:
-          name: "History_Car_Accident_Pipelines_Orchestrator"
-      tasks:
-        - task_key: run_bronze_pipeline
-          existing_cluster_id: ${var.prod_cluster_id}
-        - task_key: run_silver_pipeline
-          existing_cluster_id: ${var.prod_cluster_id}
-        - task_key: run_gold_pipeline
-          existing_cluster_id: ${var.prod_cluster_id}
-
-        # dqx_quality_audit_job:
-        #   tasks:
-        #     - task_key: run_dqx_quality_checks
-        #       existing_cluster_id: ${var.prod_cluster_id}
-
-      dashboards:
-        car_accidents_dashboard:
-          display_name: "Car Accidents Analytics"
-          file_path: ./sql/Car accidents 2018-2024 pl.lvdash.json
-          warehouse_id: ${var.prod_warehouse_id}
-              
+  prod_new:
+    mode: production
+    workspace:
+      host: https://adb-7405615123305702.2.azuredatabricks.net/
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: dbr_dev
+      schema: prod
+      cluster_node_type: "Standard_F4"
+    permissions:
+      - user_name: artemzharkov10@softserve.academy
+        level: CAN_MANAGE
