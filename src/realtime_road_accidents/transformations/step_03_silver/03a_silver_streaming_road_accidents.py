@@ -34,7 +34,9 @@ silver_table_schema = StructType([
 @dp.expect_all_or_drop(basic_expectations)
 @dp.expect_all_or_drop(business_expectations)
 def silver_road_accidents_valid_view():
-    df = dp.read_stream("bronze_streaming_road_accidents")
+    # df = dp.read_stream("bronze_streaming_road_accidents") #multi-think impl.
+
+    df = spark.readStream.table("dbr_dev.artemzharkov10_bronze.bronze_streaming_road_accidents") # zerobus impl.
     parsed_df = parse_entities_from_json(df)
     
     drivers_df = spark.table("lab10_catalog.public.external_drivers")
