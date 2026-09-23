@@ -58,7 +58,7 @@ targets:
       host: https://adb-7405615123305702.2.azuredatabricks.net/
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:
-      catalog: dbr_dev
+      catalog: dbr_dev_trial
       schema: prod
       cluster_node_type: "Standard_F4"
     permissions:

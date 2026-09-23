@@ -3,7 +3,7 @@ resources:
     bronze_pipeline:
       name: history_car_accident_bronze_pipeline_${bundle.target}
       target: artemzharkov10_bronze
-      catalog: dbr_dev
+      catalog: ${var.catalog}
       serverless: true
       libraries:
         - file:
@@ -12,7 +12,7 @@ resources:
     silver_pipeline:
       name: history_car_accident_silver_pipeline_${bundle.target}
       target: artemzharkov10_silver
-      catalog: dbr_dev
+      catalog: ${var.catalog}
       serverless: true
       libraries:
         - file:
@@ -21,7 +21,7 @@ resources:
     gold_pipeline:
       name: history_car_accident_gold_pipeline_${bundle.target}
       target: artemzharkov10_gold
-      catalog: dbr_dev
+      catalog: ${var.catalog}
       serverless: true
       libraries:
         - file:

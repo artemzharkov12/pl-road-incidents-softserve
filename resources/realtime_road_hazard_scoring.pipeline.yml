@@ -9,7 +9,7 @@ resources:
         dependencies:
           - -r ../src/realtime_road_hazard_scoring/requirements.txt
       serverless: true
-      catalog: dbr_dev
+      catalog: ${var.catalog}
       schema: artemzharkov10_bronze
       root_path: ../src/realtime_road_hazard_scoring
 
