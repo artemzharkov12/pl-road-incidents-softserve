@@ -1,13 +1,16 @@
 resources:
   pipelines:
-    realtime_road_accidents:
-      name: realtime_road_accidents
+    realtime_road_accidents_v2:
+      name: realtime_road_accidents_v2
+      target: artemzharkov10_gold # <-- Возвращаем target, чтобы API пропустил создание
       configuration:
+        silver_catalog: ${var.catalog}
+        bronze_schema: "artemzharkov10_bronze"
         silver_schema: "artemzharkov10_silver"
+        gold_schema: "artemzharkov10_gold"
       libraries:
         - glob:
             include: ../src/realtime_road_accidents/transformations/**
       serverless: true
       catalog: ${var.catalog}
-      schema: artemzharkov10_bronze
       root_path: ../src/realtime_road_accidents

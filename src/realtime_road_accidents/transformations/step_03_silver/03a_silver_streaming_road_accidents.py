@@ -5,7 +5,7 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType, 
 from silver_logic_streaming_road_accidents import parse_entities_from_json
 # Data quality sets
 from silver_dq_rules import basic_expectations, business_expectations
-
+BRONZE_SCHEMA = spark.conf.get("bronze_schema", "artemzharkov10_bronze")
 SILVER_SCHEMA = spark.conf.get("silver_schema", "artemzharkov10_silver")
 
 silver_table_schema = StructType([
@@ -36,7 +36,7 @@ silver_table_schema = StructType([
 def silver_road_accidents_valid_view():
     # df = dp.read_stream("bronze_streaming_road_accidents") #multi-think impl.
 
-    df = spark.readStream.table("dbr_dev.artemzharkov10_bronze.bronze_streaming_road_accidents") # zerobus impl.
+    df = spark.readStream.table(f"{BRONZE_SCHEMA}.bronze_streaming_road_accidents") # zerobus impl.
     parsed_df = parse_entities_from_json(df)
     
     drivers_df = spark.table("lab10_catalog.public.external_drivers")
@@ -51,7 +51,7 @@ def silver_road_accidents_valid_view():
 
 @dp.table(name = f"{SILVER_SCHEMA}.silver_streaming_road_accidents_quarantine")
 def silver_streaming_road_accidents_quarantine():
-    df = dp.read_stream("bronze_streaming_road_accidents") 
+    df = dp.read_stream(f"{BRONZE_SCHEMA}.bronze_streaming_road_accidents") 
     parsed_df = parse_entities_from_json(df)
 
     invalid_conditions = []
