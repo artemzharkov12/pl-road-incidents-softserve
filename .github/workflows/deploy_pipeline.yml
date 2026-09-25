@@ -49,7 +49,7 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
           DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
-        run: databricks bundle deploy -t prod_trial --auto-approve
+        run: databricks bundle deploy -t prod_new --auto-approve
 
       - name: Trigger DLT Pipeline and Monitor Status
         env:
