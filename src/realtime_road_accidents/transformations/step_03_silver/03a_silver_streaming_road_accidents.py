@@ -39,7 +39,7 @@ def silver_road_accidents_valid_view():
     df = spark.readStream.table(f"{BRONZE_SCHEMA}.bronze_streaming_road_accidents") # zerobus impl.
     parsed_df = parse_entities_from_json(df)
     
-    drivers_df = spark.table("lab10_catalog.public.external_drivers")
+    drivers_df = spark.table("artemzharkov10_neon_catalog.public.external_drivers")
     
     enriched_df = parsed_df.join(
         F.broadcast(drivers_df), # avoid shuffle
