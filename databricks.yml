@@ -38,7 +38,7 @@ targets:
       catalog: dbr_dev
       schema: ${workspace.current_user.short_name}
       cluster_node_type: "i3.xlarge"
-      
+
   prod:
     mode: production
     workspace:
