@@ -35,4 +35,4 @@ jobs:
         env:
           DATABRICKS_HOST: ${{ secrets.PROD_WORKSPACE_URL }}
           DATABRICKS_TOKEN: ${{ secrets.PROD_TOKEN }}
-        run: databricks bundle validate -t prod
+        run: databricks bundle validate -t prod_new
