@@ -38,5 +38,5 @@ resources:
         - file:
             path: ../src/car_accident_pl_etl/transformations/04_gold/04b_gold_facts.py
       environment:
-        dependencies:
-          - -r /Workspace/Users/${workspace.current_user.userName}/pl-road-incidents-softserve/src/car_accident_pl_etl/requirements.txt
+              dependencies:
+                - -r ../src/car_accident_pl_etl/requirements.txt
