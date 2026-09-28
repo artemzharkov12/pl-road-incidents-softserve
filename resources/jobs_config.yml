@@ -9,7 +9,7 @@ resources:
             
         - task_key: 02a_silver_history_voivodeship
           depends_on:
-            - task_key: 01a_bronze_history_voivodeship
+            - task_key:  01a_bronze_history_voivodeship
           notebook_task:
             notebook_path: ../notebooks/02_silver/02a_silver_history_voivodeship_weather.ipynb
             
@@ -40,13 +40,11 @@ resources:
     history_car_accident_orchestrate_pipeline:
       name: "History_Car_Accident_Pipelines_Orchestrator"
       tasks:
-        - task_key: run_bronze_pipeline
-          pipeline_task:
-            pipeline_id: ${resources.pipelines.bronze_pipeline.id}
+        # - task_key: run_bronze_pipeline
+        #   pipeline_task:
+        #     pipeline_id: ${resources.pipelines.bronze_pipeline.id}
             
         - task_key: run_silver_pipeline
-          depends_on:
-            - task_key: run_bronze_pipeline
           pipeline_task:
             pipeline_id: ${resources.pipelines.silver_pipeline.id}
             

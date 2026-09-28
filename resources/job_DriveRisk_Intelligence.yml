@@ -1,0 +1,32 @@
+resources:
+  jobs:
+    drive_risk_intelligence:
+      name: drive_risk_intelligence 
+      tasks:
+        - task_key: run_history_silver
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.silver_pipeline.id}
+            
+        - task_key: run_history_gold
+          depends_on:
+            - task_key: run_history_silver
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.gold_pipeline.id}
+            
+        - task_key: run_weather_clustering
+          depends_on:
+            - task_key: run_history_gold
+          run_job_task:
+            job_id: ${resources.jobs.Algorithm_Of_Weather_Clustering.id}
+            
+        - task_key: start_realtime_accidents
+          depends_on:
+            - task_key: run_weather_clustering
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.realtime_road_accidents_v2.id}
+            
+        - task_key: start_hazard_scoring
+          depends_on:
+            - task_key: run_weather_clustering
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.realtime_road_hazard_scoring.id}
