@@ -1,0 +1,252 @@
+{
+  "datasets": [
+    {
+      "name": "47712f67",
+      "displayName": "Regional Traffic Incident Events and Timing Dataset",
+      "queryLines": [
+        "SELECT\r\n",
+        "    f.accident_id,\r\n",
+        "    f.start_longitude,\r\n",
+        "    f.start_latitude,\r\n",
+        "    e.icon_category,\r\n",
+        "    e.event_type_description,\r\n",
+        "    e.impact_jams,\r\n",
+        "    t.date,\r\n",
+        "    t.hour\r\n",
+        "FROM dbr_dev_trial.prod.gold_fact_accidents_streaming_road_accidents f\r\n",
+        "JOIN dbr_dev_trial.prod.gold_dim_event_type_streaming_road_accidents e \r\n",
+        "  ON f.event_type_key = e.event_type_key\r\n",
+        "JOIN dbr_dev_trial.prod.gold_dim_time_streaming_road_accidents t \r\n",
+        "  ON f.date_key = t.date_key\r\n",
+        "WHERE f.start_latitude BETWEEN 49.00 AND 54.84\r\n",
+        "  AND f.start_longitude BETWEEN 14.12 AND 24.15"
+      ],
+      "catalog": "dbr_dev",
+      "schema": "default"
+    }
+  ],
+  "pages": [
+    {
+      "name": "4e876f76",
+      "displayName": "Map",
+      "layout": [
+        {
+          "widget": {
+            "name": "fc0f3845",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "47712f67",
+                  "fields": [
+                    {
+                      "name": "event_type_description",
+                      "expression": "`event_type_description`"
+                    },
+                    {
+                      "name": "start_latitude",
+                      "expression": "`start_latitude`"
+                    },
+                    {
+                      "name": "start_longitude",
+                      "expression": "`start_longitude`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "mark": {
+                "size": -3
+              },
+              "widgetType": "symbol-map",
+              "encodings": {
+                "coordinates": {
+                  "latitude": {
+                    "fieldName": "start_latitude"
+                  },
+                  "longitude": {
+                    "fieldName": "start_longitude"
+                  }
+                },
+                "color": {
+                  "fieldName": "event_type_description",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 12,
+            "height": 9
+          }
+        },
+        {
+          "widget": {
+            "name": "0a0823c6",
+            "queries": [
+              {
+                "name": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_date",
+                "query": {
+                  "datasetName": "47712f67",
+                  "fields": [
+                    {
+                      "name": "date",
+                      "expression": "`date`"
+                    },
+                    {
+                      "name": "date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "selection": {
+                "defaultSelection": {
+                  "range": {
+                    "dataType": "DATE",
+                    "min": {
+                      "value": "now-7d/d"
+                    },
+                    "max": {
+                      "value": "now/d"
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "date",
+                    "queryName": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_date"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 4,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "8655ef79",
+            "queries": [
+              {
+                "name": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_hour",
+                "query": {
+                  "datasetName": "47712f67",
+                  "fields": [
+                    {
+                      "name": "hour",
+                      "expression": "`hour`"
+                    },
+                    {
+                      "name": "hour_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "hour",
+                    "queryName": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_hour"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 4,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "a65431f2",
+            "queries": [
+              {
+                "name": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_impact_jams",
+                "query": {
+                  "datasetName": "47712f67",
+                  "fields": [
+                    {
+                      "name": "impact_jams",
+                      "expression": "`impact_jams`"
+                    },
+                    {
+                      "name": "impact_jams_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "impact_jams",
+                    "queryName": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_impact_jams"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 0,
+            "width": 4,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

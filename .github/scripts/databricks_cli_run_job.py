@@ -4,7 +4,7 @@ from databricks.sdk import WorkspaceClient
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--job-name", required=True)
+parser.add_argument("--job-name", default="drive_risk_intelligence", help="Name of the Databricks job to run")
 
 args = parser.parse_args()
 client = WorkspaceClient()
@@ -21,14 +21,14 @@ if not target_job_id:
 
 response = client.jobs.run_now(job_id=target_job_id)
 run_id = response.run_id
-print(f"Run ID = {run_id}")
+print(f"Run ID = {run_id} started for job '{args.job_name}'")
 
 while True:
     info = client.jobs.get_run(run_id=run_id)
     life_cycle = info.state.life_cycle_state.value
 
     print(f"Current life cycle: {life_cycle}")
-    # check result when already done 
+    
     if life_cycle in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
         result_state = info.state.result_state.value
         print(f"Final result state: {result_state}")
@@ -41,4 +41,3 @@ while True:
             exit(1)
             
     time.sleep(20)
-
