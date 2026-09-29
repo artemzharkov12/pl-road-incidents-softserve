@@ -1,7 +1,7 @@
 # DriveRisk Intelligence (DRI)
 
 ## Project Description
-DriveRisk Intelligence (DRI) is a complete end-to-end data processing pipeline and analytical solution for evaluating road traffic accidents in Poland. The system detects hazardous weather conditions in real-time, classifies them by the level of danger to drivers, and visualizes the risk on an interactive map
+DriveRisk Intelligence (DRI) is a complete end-to-end data processing pipeline and analytical solution for evaluating road traffic accidents in Poland. The system detects hazardous weather conditions in real-time, classifies them by the level of danger to drivers, and visualizes the risk on an interactive map.
 
 The architecture strictly follows the Medallion pattern (Bronze, Silver, Gold) with physical isolation of database schemas governed by Databricks Unity Catalog.
 
