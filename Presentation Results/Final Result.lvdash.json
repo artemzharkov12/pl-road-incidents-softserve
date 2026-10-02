@@ -13,15 +13,15 @@
         "    e.impact_jams,\r\n",
         "    t.date,\r\n",
         "    t.hour\r\n",
-        "FROM dbr_dev_trial.prod.gold_fact_accidents_streaming_road_accidents f\r\n",
-        "JOIN dbr_dev_trial.prod.gold_dim_event_type_streaming_road_accidents e \r\n",
+        "FROM dbr_dev_trial.artemzharkov10_gold.gold_fact_accidents_streaming_road_accidents f\r\n",
+        "JOIN dbr_dev_trial.artemzharkov10_gold.gold_dim_event_type_streaming_road_accidents e \r\n",
         "  ON f.event_type_key = e.event_type_key\r\n",
-        "JOIN dbr_dev_trial.prod.gold_dim_time_streaming_road_accidents t \r\n",
+        "JOIN dbr_dev_trial.artemzharkov10_gold.gold_dim_time_streaming_road_accidents t \r\n",
         "  ON f.date_key = t.date_key\r\n",
         "WHERE f.start_latitude BETWEEN 49.00 AND 54.84\r\n",
         "  AND f.start_longitude BETWEEN 14.12 AND 24.15"
       ],
-      "catalog": "dbr_dev",
+      "catalog": "dbr_dev_trial",
       "schema": "default"
     }
   ],
@@ -87,7 +87,7 @@
             "x": 0,
             "y": 1,
             "width": 12,
-            "height": 9
+            "height": 12
           }
         },
         {
@@ -153,17 +153,17 @@
             "name": "8655ef79",
             "queries": [
               {
-                "name": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_hour",
+                "name": "dashboards/01f1bbea7e1a1f89a8b33907096ab2a0/datasets/01f1bbea7e1b1763b8f7643e3e157ab5_hour",
                 "query": {
                   "datasetName": "47712f67",
                   "fields": [
                     {
-                      "name": "hour",
-                      "expression": "`hour`"
+                      "name": "min(hour)",
+                      "expression": "MIN(`hour`)"
                     },
                     {
-                      "name": "hour_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                      "name": "max(hour)",
+                      "expression": "MAX(`hour`)"
                     }
                   ],
                   "disaggregated": false
@@ -175,12 +175,12 @@
               "frame": {
                 "showTitle": true
               },
-              "widgetType": "filter-multi-select",
+              "widgetType": "range-slider",
               "encodings": {
                 "fields": [
                   {
                     "fieldName": "hour",
-                    "queryName": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_hour"
+                    "queryName": "dashboards/01f1bbea7e1a1f89a8b33907096ab2a0/datasets/01f1bbea7e1b1763b8f7643e3e157ab5_hour"
                   }
                 ]
               }
@@ -198,17 +198,17 @@
             "name": "a65431f2",
             "queries": [
               {
-                "name": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_impact_jams",
+                "name": "dashboards/01f1bbea7e1a1f89a8b33907096ab2a0/datasets/01f1bbea7e1b1763b8f7643e3e157ab5_impact_jams",
                 "query": {
                   "datasetName": "47712f67",
                   "fields": [
                     {
-                      "name": "impact_jams",
-                      "expression": "`impact_jams`"
+                      "name": "min(impact_jams)",
+                      "expression": "MIN(`impact_jams`)"
                     },
                     {
-                      "name": "impact_jams_associativity",
-                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                      "name": "max(impact_jams)",
+                      "expression": "MAX(`impact_jams`)"
                     }
                   ],
                   "disaggregated": false
@@ -220,12 +220,12 @@
               "frame": {
                 "showTitle": true
               },
-              "widgetType": "filter-single-select",
+              "widgetType": "range-slider",
               "encodings": {
                 "fields": [
                   {
                     "fieldName": "impact_jams",
-                    "queryName": "dashboards/01f1b77f07a1145b9642fcf54c99c3ed/datasets/01f1b78b16e41b6baae7dbe40660f538_impact_jams"
+                    "queryName": "dashboards/01f1bbea7e1a1f89a8b33907096ab2a0/datasets/01f1bbea7e1b1763b8f7643e3e157ab5_impact_jams"
                   }
                 ]
               }

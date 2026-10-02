@@ -3,16 +3,16 @@
 # [tool.databricks.environment]
 # environment_version = "5"
 # ///
-dbutils.widgets.text("bronze_catalog","dbr_dev")
-dbutils.widgets.text("bronze_schema","artemzharkov10_bronze")
+dbutils.widgets.text("bronze_catalog","dbr_dev_trial")
+dbutils.widgets.text("bronze_schema","artemzharkov10_gold")
 
 BRONZE_CATALOG = dbutils.widgets.get("bronze_catalog")
 BRONZE_SCHEMA = dbutils.widgets.get("bronze_schema")
 
 # COMMAND ----------
 
-spark.sql(f"CREATE VOLUME IF NOT EXISTS dbr_dev_trial.artemzharkov10_bronze.raw_data")
-spark.sql(f"CREATE VOLUME IF NOT EXISTS dbr_dev_trial.artemzharkov10_bronze.checkpoints")
+spark.sql(f"CREATE VOLUME IF NOT EXISTS dbr_dev_trial.artemzharkov10_gold.raw_data")
+spark.sql(f"CREATE VOLUME IF NOT EXISTS dbr_dev_trial.artemzharkov10_gold.checkpoints")
 
 # COMMAND ----------
 

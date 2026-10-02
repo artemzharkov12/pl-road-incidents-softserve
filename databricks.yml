@@ -22,11 +22,51 @@ variables:
     description: "Node type ID for jobs"
 
 resources:
-  dashboards:
-    car_accidents_dashboard:
-      display_name: "Car Accidents Analytics"
-      file_path: ./sql/Car accidents 2018-2024 pl.lvdash.json
-      warehouse_id: ${var.prod_warehouse_id}
+  jobs:
+    lab12_rag_pipeline:
+      name: "Lab 12 RAG Pipeline"
+      job_clusters:
+        - job_cluster_key: lab12_cluster
+          new_cluster:
+            spark_version: 14.3.x-cpu-ml-scala2.12
+            node_type_id: Standard_DS3_v2
+            num_workers: 1
+      tasks:
+        - task_key: security
+          notebook_task:
+            notebook_path: ./Lab12/00_rag_security.ipynb
+          job_cluster_key: lab12_cluster
+          libraries:
+            - requirements: ./Lab12/requirements.txt
+            
+        - task_key: data_prep
+          depends_on:
+            - task_key: security
+          notebook_task:
+            notebook_path: ./Lab12/01_rag_data_prep.ipynb
+          job_cluster_key: lab12_cluster
+          
+        - task_key: vector_update
+          depends_on:
+            - task_key: data_prep
+          notebook_task:
+            notebook_path: ./Lab12/02_rag_vectors.ipynb
+          job_cluster_key: lab12_cluster
+          
+        - task_key: communication
+          depends_on:
+            - task_key: vector_update
+          notebook_task:
+            notebook_path: ./Lab12/03_rag_communication.ipynb
+          job_cluster_key: lab12_cluster
+          
+        - task_key: evaluation
+          depends_on:
+            - task_key: communication
+          notebook_task:
+            notebook_path: ./Lab12/04_rag_evaluation_and_monitoring.ipynb
+          job_cluster_key: lab12_cluster
+  
 
 targets:
   dev:
