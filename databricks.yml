@@ -37,7 +37,10 @@ resources:
             notebook_path: ./Lab12/00_rag_security.ipynb
           job_cluster_key: lab12_cluster
           libraries:
-            - requirements: ./Lab12/requirements.txt
+            - pypi:
+                package: "databricks-sdk>=0.30.0"
+            - pypi:
+                package: "protobuf<5.0.0"
             
         - task_key: data_prep
           depends_on:
